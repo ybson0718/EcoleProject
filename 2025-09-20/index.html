@@ -1,0 +1,865 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>알고리즘 풀이 분석 보고서</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background-color: #1a1a2e;
+            color: #e0e0e0;
+        }
+        .slide {
+            background-color: #16213e;
+            border: 1px solid #0f3460;
+            border-radius: 1rem;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4);
+            transition: transform 0.3s ease, opacity 0.3s ease;
+            display: none; /* 슬라이드 기본 숨김 */
+        }
+        .slide.active {
+            display: block; /* 활성 슬라이드만 보임 */
+        }
+        .nav-button {
+            transition: all 0.3s ease;
+            border-bottom: 3px solid transparent;
+        }
+        .nav-button.active, .nav-button:hover {
+            color: #e94560;
+            border-bottom-color: #e94560;
+        }
+        .code-tab {
+            transition: all 0.3s ease;
+            border-bottom: 2px solid transparent;
+        }
+        .code-tab.active, .code-tab:hover {
+            background-color: #e94560;
+            color: #16213e;
+            border-bottom-color: #e94560;
+        }
+        pre {
+            background-color: #0f1624;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            overflow-x: auto;
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+        .code-block { display: none; }
+        .code-block.active { display: block; }
+        
+        /* 코드 하이라이팅 스타일 */
+        .hl-keyword { color: #e94560; }
+        .hl-type { color: #57a6ff; }
+        .hl-string { color: #ce9178; }
+        .hl-number { color: #b5cea8; }
+        .hl-comment { color: #6a9955; }
+        .hl-variable { color: #9cdcfe; }
+        .hl-function { color: #dcdcaa; }
+    </style>
+</head>
+<body class="p-4 md:p-8">
+
+    <div class="max-w-7xl mx-auto">
+        <header class="text-center mb-8">
+            <h1 class="text-4xl md:text-5xl font-bold text-white mb-2">알고리즘 풀이 분석 보고서</h1>
+            <p class="text-lg text-gray-400">제공된 Python 코드 기반 심층 분석</p>
+        </header>
+
+        <!-- 슬라이드 네비게이션 -->
+        <nav class="flex flex-wrap justify-center gap-x-6 gap-y-2 mb-8">
+            <!-- 네비게이션 버튼은 JS로 동적 생성 -->
+        </nav>
+
+        <!-- 슬라이드 컨테이너 -->
+        <main id="slides-container">
+            <!-- 슬라이드는 JS로 동적 생성 -->
+        </main>
+    </div>
+
+    <script>
+        // Reordered slide data as per user request
+        const slidesData = [
+            { // 1. 2750
+                title: "문제 1: 수 정렬하기 (백준 2750)",
+                description: "N개의 수가 주어졌을 때, 이를 오름차순으로 정렬하는 기본적인 정렬 문제입니다. 입력된 코드는 버블 정렬(Bubble Sort)을 사용했습니다.",
+                analysis: {
+                    time: "O(N²): 데이터 개수의 제곱에 비례하여 성능이 저하됩니다. N이 1,000만 되어도 비효율적입니다.",
+                    memory: "O(1): 입력 배열 외에 추가적인 메모리 공간을 거의 사용하지 않는 'in-place' 정렬입니다.",
+                    accuracy: "정확함: 어떤 경우에도 항상 정확하게 정렬된 결과를 보장하지만, 비효율적입니다."
+                },
+                codes: {
+                    python: `
+<span class="hl-comment"># N개의 수를 입력받음</span>
+n = <span class="hl-function">int</span>(<span class="hl-function">input</span>())
+a = []
+<span class="hl-keyword">for</span> i <span class="hl-keyword">in</span> <span class="hl-function">range</span>(n):
+    a.<span class="hl-function">append</span>(<span class="hl-function">int</span>(<span class="hl-function">input</span>()))
+
+<span class="hl-comment"># --- 버블 정렬 (Bubble Sort) 시작 ---</span>
+<span class="hl-keyword">for</span> i <span class="hl-keyword">in</span> <span class="hl-function">range</span>(n - <span class="hl-number">1</span>):
+    <span class="hl-keyword">for</span> j <span class="hl-keyword">in</span> <span class="hl-function">range</span>(n - <span class="hl-number">1</span> - i):
+        <span class="hl-keyword">if</span> a[j] > a[j+<span class="hl-number">1</span>]:
+            a[j], a[j+<span class="hl-number">1</span>] = a[j+<span class="hl-number">1</span>], a[j]
+<span class="hl-comment"># --- 버블 정렬 (Bubble Sort) 끝 ---</span>
+
+<span class="hl-comment"># 정렬된 결과를 출력</span>
+<span class="hl-keyword">for</span> i <span class="hl-keyword">in</span> a:
+    <span class="hl-function">print</span>(i)
+                    `,
+                    java: `
+<span class="hl-keyword">import</span> java.util.Scanner;
+
+<span class="hl-keyword">public class</span> Main {
+    <span class="hl-keyword">public static void</span> <span class="hl-function">main</span>(String[] args) {
+        Scanner <span class="hl-variable">sc</span> = <span class="hl-keyword">new</span> Scanner(System.in);
+        <span class="hl-type">int</span> n = sc.<span class="hl-function">nextInt</span>();
+        <span class="hl-type">int</span>[] a = <span class="hl-keyword">new</span> <span class="hl-type">int</span>[n];
+        <span class="hl-keyword">for</span> (<span class="hl-type">int</span> i = <span class="hl-number">0</span>; i < n; i++) {
+            a[i] = sc.<span class="hl-function">nextInt</span>();
+        }
+
+        <span class="hl-comment">// 버블 정렬</span>
+        <span class="hl-keyword">for</span> (<span class="hl-type">int</span> i = <span class="hl-number">0</span>; i < n - <span class="hl-number">1</span>; i++) {
+            <span class="hl-keyword">for</span> (<span class="hl-type">int</span> j = <span class="hl-number">0</span>; j < n - <span class="hl-number">1</span> - i; j++) {
+                <span class="hl-keyword">if</span> (a[j] > a[j + <span class="hl-number">1</span>]) {
+                    <span class="hl-type">int</span> temp = a[j];
+                    a[j] = a[j + <span class="hl-number">1</span>];
+                    a[j + <span class="hl-number">1</span>] = temp;
+                }
+            }
+        }
+
+        <span class="hl-keyword">for</span> (<span class="hl-type">int</span> val : a) {
+            System.out.<span class="hl-function">println</span>(val);
+        }
+    }
+}
+                    `,
+                    javascript: `
+<span class="hl-keyword">const</span> readline = <span class="hl-function">require</span>(<span class="hl-string">'readline'</span>);
+<span class="hl-keyword">const</span> rl = readline.<span class="hl-function">createInterface</span>({ input: process.stdin, output: process.stdout });
+
+<span class="hl-keyword">let</span> input = [];
+rl.<span class="hl-function">on</span>(<span class="hl-string">'line'</span>, (<span class="hl-variable">line</span>) => input.<span class="hl-function">push</span>(line))
+  .<span class="hl-function">on</span>(<span class="hl-string">'close'</span>, () => {
+    <span class="hl-keyword">const</span> n = <span class="hl-function">parseInt</span>(input[<span class="hl-number">0</span>]);
+    <span class="hl-keyword">const</span> a = input.<span class="hl-function">slice</span>(<span class="hl-number">1</span>).<span class="hl-function">map</span>(Number);
+
+    <span class="hl-comment">// 버블 정렬</span>
+    <span class="hl-keyword">for</span> (<span class="hl-keyword">let</span> i = <span class="hl-number">0</span>; i < n - <span class="hl-number">1</span>; i++) {
+        <span class="hl-keyword">for</span> (<span class="hl-keyword">let</span> j = <span class="hl-number">0</span>; j < n - <span class="hl-number">1</span> - i; j++) {
+            <span class="hl-keyword">if</span> (a[j] > a[j + <span class="hl-number">1</span>]) {
+                [a[j], a[j + <span class="hl-number">1</span>]] = [a[j + <span class="hl-number">1</span>], a[j]];
+            }
+        }
+    }
+    
+    a.<span class="hl-function">forEach</span>(val => console.<span class="hl-function">log</span>(val));
+    process.<span class="hl-function">exit</span>();
+  });
+                    `
+                }
+            },
+            { // 2. 1427
+                title: "문제 2: 소트인사이드 (백준 1427)",
+                description: "주어진 수의 각 자릿수를 내림차순으로 정렬하는 문제입니다. 입력된 코드는 선택 정렬(Selection Sort)을 사용했습니다. 자릿수가 많지 않으므로 O(L²)도 충분히 빠릅니다. (L: 자릿수)",
+                analysis: {
+                    time: "O(L²): L은 입력된 수의 자릿수입니다. L은 최대 10이므로, 연산 횟수는 매우 적어 효율적입니다.",
+                    memory: "O(L): 입력된 수를 자릿수별로 저장할 배열/리스트가 필요합니다.",
+                    accuracy: "정확함: 자릿수가 적은 경우에는 선택 정렬도 좋은 선택이 될 수 있습니다."
+                },
+                codes: {
+                    python: `
+n_str = <span class="hl-function">input</span>()
+digits = [<span class="hl-function">int</span>(d) <span class="hl-keyword">for</span> d <span class="hl-keyword">in</span> n_str]
+
+<span class="hl-comment"># 선택 정렬 (내림차순)</span>
+<span class="hl-keyword">for</span> i <span class="hl-keyword">in</span> <span class="hl-function">range</span>(<span class="hl-function">len</span>(digits)):
+    max_index = i
+    <span class="hl-keyword">for</span> j <span class="hl-keyword">in</span> <span class="hl-function">range</span>(i + <span class="hl-number">1</span>, <span class="hl-function">len</span>(digits)):
+        <span class="hl-keyword">if</span> digits[j] > digits[max_index]:
+            max_index = j
+    digits[i], digits[max_index] = digits[max_index], digits[i]
+
+<span class="hl-keyword">for</span> d <span class="hl-keyword">in</span> digits:
+    <span class="hl-function">print</span>(d, end=<span class="hl-string">''</span>)
+                    `,
+                    java: `
+<span class="hl-keyword">import</span> java.util.Scanner;
+<span class="hl-keyword">import</span> java.util.Arrays;
+<span class="hl-keyword">import</span> java.util.Collections;
+
+<span class="hl-keyword">public class</span> Main {
+    <span class="hl-keyword">public static void</span> <span class="hl-function">main</span>(String[] args) {
+        Scanner <span class="hl-variable">sc</span> = <span class="hl-keyword">new</span> Scanner(System.in);
+        String n_str = sc.<span class="hl-function">next</span>();
+        Character[] digits = <span class="hl-keyword">new</span> Character[n_str.<span class="hl-function">length</span>()];
+        <span class="hl-keyword">for</span>(<span class="hl-type">int</span> i=<span class="hl-number">0</span>; i < n_str.<span class="hl-function">length</span>(); i++) {
+            digits[i] = n_str.<span class="hl-function">charAt</span>(i);
+        }
+
+        <span class="hl-comment">// 내장 정렬 함수를 역순으로 사용 (더 효율적)</span>
+        Arrays.<span class="hl-function">sort</span>(digits, Collections.<span class="hl-function">reverseOrder</span>());
+
+        <span class="hl-keyword">for</span>(Character d : digits) {
+            System.out.<span class="hl-function">print</span>(d);
+        }
+    }
+}
+                    `,
+                    javascript: `
+<span class="hl-keyword">const</span> readline = <span class="hl-function">require</span>(<span class="hl-string">'readline'</span>);
+<span class="hl-keyword">const</span> rl = readline.<span class="hl-function">createInterface</span>({ input: process.stdin, output: process.stdout });
+
+rl.<span class="hl-function">on</span>(<span class="hl-string">'line'</span>, (<span class="hl-variable">line</span>) => {
+    <span class="hl-keyword">const</span> result = line
+        .<span class="hl-function">split</span>(<span class="hl-string">''</span>) <span class="hl-comment">"// 각 자릿수로 쪼개기"</span>
+        .<span class="hl-function">map</span>(Number) <span class="hl-comment">"// 숫자로 변환"</span>
+        .<span class="hl-function">sort</span>((a, b) => b - a) <span class="hl-comment">"// 내림차순 정렬"</span>
+        .<span class="hl-function">join</span>(<span class="hl-string">''</span>); <span class="hl-comment">"// 다시 문자열로 합치기"</span>
+
+    console.<span class="hl-function">log</span>(result);
+    rl.<span class="hl-function">close</span>();
+}).<span class="hl-function">on</span>(<span class="hl-string">'close'</span>, () => {
+    process.<span class="hl-function">exit</span>();
+});
+                    `
+                }
+            },
+            { // 3. 11399
+                title: "문제 3: ATM (백준 11399)",
+                description: "N명의 사람이 돈을 인출하는데 걸리는 시간의 합을 최소화하는 문제입니다. 이는 '가장 적게 걸리는 사람부터 처리'하는 그리디(Greedy) 알고리즘으로 해결할 수 있습니다.",
+                analysis: {
+                    time: "O(N log N): 사람들을 인출 시간 순으로 정렬하는 데 걸리는 시간이 전체 알고리즘의 시간 복잡도를 결정합니다.",
+                    memory: "O(N): 입력된 시간들을 저장할 배열이 필요합니다.",
+                    accuracy: "정확함: 이 문제에서 그리디 접근법(가장 짧은 작업을 먼저 수행)이 최적의 해임을 수학적으로 증명할 수 있습니다."
+                },
+                codes: {
+                    python: `
+n = <span class="hl-function">int</span>(<span class="hl-function">input</span>())
+m = <span class="hl-function">list</span>(<span class="hl-function">map</span>(<span class="hl-function">int</span>, <span class="hl-function">input</span>().<span class="hl-function">split</span>()))
+m.<span class="hl-function">sort</span>() <span class="hl-comment"># 오름차순 정렬</span>
+
+total = <span class="hl-number">0</span>
+current_sum = <span class="hl-number">0</span>
+<span class="hl-keyword">for</span> time <span class="hl-keyword">in</span> m:
+    current_sum += time <span class="hl-comment"># 현재 사람이 기다리는 시간</span>
+    total += current_sum <span class="hl-comment"># 총 시간에 누적</span>
+<span class="hl-function">print</span>(total)
+                    `,
+                    java: `
+<span class="hl-keyword">import</span> java.util.Scanner;
+<span class="hl-keyword">import</span> java.util.Arrays;
+
+<span class="hl-keyword">public class</span> Main {
+    <span class="hl-keyword">public static void</span> <span class="hl-function">main</span>(String[] args) {
+        Scanner <span class="hl-variable">sc</span> = <span class="hl-keyword">new</span> Scanner(System.in);
+        <span class="hl-type">int</span> n = sc.<span class="hl-function">nextInt</span>();
+        <span class="hl-type">int</span>[] m = <span class="hl-keyword">new</span> <span class="hl-type">int</span>[n];
+        <span class="hl-keyword">for</span> (<span class="hl-type">int</span> i = <span class="hl-number">0</span>; i < n; i++) {
+            m[i] = sc.<span class="hl-function">nextInt</span>();
+        }
+
+        Arrays.<span class="hl-function">sort</span>(m);
+
+        <span class="hl-type">int</span> total = <span class="hl-number">0</span>;
+        <span class="hl-type">int</span> currentSum = <span class="hl-number">0</span>;
+        <span class="hl-keyword">for</span> (<span class="hl-type">int</span> time : m) {
+            currentSum += time;
+            total += currentSum;
+        }
+        System.out.<span class="hl-function">println</span>(total);
+    }
+}
+                    `,
+                    javascript: `
+<span class="hl-keyword">const</span> fs = <span class="hl-function">require</span>(<span class="hl-string">'fs'</span>);
+<span class="hl-keyword">const</span> input = fs.<span class="hl-function">readFileSync</span>(<span class="hl-number">0</span>).<span class="hl-function">toString</span>().<span class="hl-function">trim</span>().<span class="hl-function">split</span>(<span class="hl-string">'\\n'</span>);
+<span class="hl-keyword">const</span> n = <span class="hl-function">parseInt</span>(input[<span class="hl-number">0</span>]);
+<span class="hl-keyword">const</span> m = input[<span class="hl-number">1</span>].<span class="hl-function">split</span>(<span class="hl-string">' '</span>).<span class="hl-function">map</span>(Number);
+
+m.<span class="hl-function">sort</span>((a, b) => a - b);
+
+<span class="hl-keyword">let</span> total = <span class="hl-number">0</span>;
+<span class="hl-keyword">let</span> currentSum = <span class="hl-number">0</span>;
+<span class="hl-keyword">for</span> (<span class="hl-keyword">const</span> time of m) {
+    currentSum += time;
+    total += currentSum;
+}
+console.<span class="hl-function">log</span>(total);
+                    `
+                }
+            },
+            { // 4. 11004
+                title: "문제 4: K번째 수 (백준 11004)",
+                description: "N개의 수를 오름차순으로 정렬했을 때, K번째에 오는 수를 찾는 문제입니다. 가장 간단한 방법은 전체를 정렬한 후 K-1 인덱스의 값을 찾는 것입니다.",
+                analysis: {
+                    time: "O(N log N): 전체 배열을 정렬하는 데 시간이 소요됩니다. (참고: 퀵 선택(Quick Select) 알고리즘을 사용하면 평균 O(N)에 해결 가능합니다.)",
+                    memory: "O(N): 입력 배열을 저장할 공간이 필요합니다.",
+                    accuracy: "정확함: 가장 직관적이고 확실한 방법입니다. 데이터 크기가 아주 크지 않다면 충분히 효과적입니다."
+                },
+                codes: {
+                    python: `
+<span class="hl-keyword">import</span> sys
+input = sys.stdin.readline
+
+N, K = <span class="hl-function">map</span>(<span class="hl-function">int</span>, <span class="hl-function">input</span>().<span class="hl-function">split</span>())
+A = <span class="hl-function">list</span>(<span class="hl-function">map</span>(<span class="hl-function">int</span>, <span class="hl-function">input</span>().<span class="hl-function">split</span>()))
+
+A.<span class="hl-function">sort</span>() <span class="hl-comment"># 먼저 전체를 정렬</span>
+
+<span class="hl-function">print</span>(A[K-<span class="hl-number">1</span>]) <span class="hl-comment"># K번째 수는 인덱스 K-1에 위치</span>
+                    `,
+                    java: `
+<span class="hl-keyword">import</span> java.util.Scanner;
+<span class="hl-keyword">import</span> java.util.Arrays;
+
+<span class="hl-keyword">public class</span> Main {
+    <span class="hl-keyword">public static void</span> <span class="hl-function">main</span>(String[] args) {
+        Scanner <span class="hl-variable">sc</span> = <span class="hl-keyword">new</span> Scanner(System.in);
+        <span class="hl-type">int</span> N = sc.<span class="hl-function">nextInt</span>();
+        <span class="hl-type">int</span> K = sc.<span class="hl-function">nextInt</span>();
+        <span class="hl-type">int</span>[] A = <span class="hl-keyword">new</span> <span class="hl-type">int</span>[N];
+        <span class="hl-keyword">for</span> (<span class="hl-type">int</span> i = <span class="hl-number">0</span>; i < N; i++) {
+            A[i] = sc.<span class="hl-function">nextInt</span>();
+        }
+
+        Arrays.<span class="hl-function">sort</span>(A);
+
+        System.out.<span class="hl-function">println</span>(A[K - <span class="hl-number">1</span>]);
+    }
+}
+                    `,
+                    javascript: `
+<span class="hl-keyword">const</span> fs = <span class="hl-function">require</span>(<span class="hl-string">'fs'</span>);
+<span class="hl-keyword">const</span> input = fs.<span class="hl-function">readFileSync</span>(<span class="hl-number">0</span>).<span class="hl-function">toString</span>().<span class="hl-function">trim</span>().<span class="hl-function">split</span>(<span class="hl-string">'\\n'</span>);
+
+<span class="hl-keyword">const</span> [N, K] = input[<span class="hl-number">0</span>].<span class="hl-function">split</span>(<span class="hl-string">' '</span>).<span class="hl-function">map</span>(Number);
+<span class="hl-keyword">const</span> A = input[<span class="hl-number">1</span>].<span class="hl-function">split</span>(<span class="hl-string">' '</span>).<span class="hl-function">map</span>(Number);
+
+A.<span class="hl-function">sort</span>((a, b) => a - b);
+
+console.<span class="hl-function">log</span>(A[K - <span class="hl-number">1</span>]);
+                    `
+                }
+            },
+            { // 5. 2751
+                title: "문제 5: 수 정렬하기 2 (백준 2751)",
+                description: "2750번 문제와 동일하지만, N의 범위가 훨씬 커져 O(N²) 알고리즘으로는 시간 초과가 발생합니다. 입력된 코드는 Python 내장 sort()를 사용했으며, 이는 평균 O(N log N)을 보장하는 Timsort로 구현되어 있습니다.",
+                analysis: {
+                    time: "O(N log N): 데이터가 많아져도 효율적으로 처리할 수 있는 표준적인 정렬 알고리즘의 시간 복잡도입니다.",
+                    memory: "O(N): Timsort나 병합 정렬은 추가적인 메모리 공간을 필요로 합니다. (최악의 경우)",
+                    accuracy: "정확함: Python, Java 등의 내장 정렬 함수는 매우 안정적이고 최적화되어 있어 신뢰성이 높습니다."
+                },
+                codes: {
+                    python: `
+<span class="hl-keyword">import</span> sys
+
+N = <span class="hl-function">int</span>(sys.stdin.readline())
+numbers = []
+<span class="hl-keyword">for</span> _ <span class="hl-keyword">in</span> <span class="hl-function">range</span>(N):
+    numbers.<span class="hl-function">append</span>(<span class="hl-function">int</span>(sys.stdin.readline()))
+
+<span class="hl-comment"># 파이썬의 내장 sort() 메서드는 Timsort를 사용하며,</span>
+<span class="hl-comment"># 평균 및 최악의 경우에도 O(N log N)의 시간 복잡도를 보장합니다.</span>
+numbers.<span class="hl-function">sort</span>()
+
+<span class="hl-keyword">for</span> num <span class="hl-keyword">in</span> numbers:
+    <span class="hl-function">print</span>(num)
+                    `,
+                    java: `
+<span class="hl-keyword">import</span> java.util.*;
+<span class="hl-keyword">import</span> java.io.*;
+
+<span class="hl-keyword">public class</span> Main {
+    <span class="hl-keyword">public static void</span> <span class="hl-function">main</span>(String[] args) <span class="hl-keyword">throws</span> IOException {
+        BufferedReader <span class="hl-variable">br</span> = <span class="hl-keyword">new</span> BufferedReader(<span class="hl-keyword">new</span> InputStreamReader(System.in));
+        StringBuilder <span class="hl-variable">sb</span> = <span class="hl-keyword">new</span> StringBuilder();
+        
+        <span class="hl-type">int</span> N = Integer.<span class="hl-function">parseInt</span>(br.<span class="hl-function">readLine</span>());
+        ArrayList<<span class="hl-type">Integer</span>> list = <span class="hl-keyword">new</span> ArrayList<>();
+        
+        <span class="hl-keyword">for</span>(<span class="hl-type">int</span> i = <span class="hl-number">0</span>; i < N; i++) {
+            list.<span class="hl-function">add</span>(Integer.<span class="hl-function">parseInt</span>(br.<span class="hl-function">readLine</span>()));
+        }
+        
+        <span class="hl-comment">// Java의 Collections.sort()는 Timsort 기반입니다.</span>
+        Collections.<span class="hl-function">sort</span>(list);
+        
+        <span class="hl-keyword">for</span>(<span class="hl-type">Integer</span> value : list) {
+            sb.<span class="hl-function">append</span>(value).<span class="hl-function">append</span>(<span class="hl-string">'\\n'</span>);
+        }
+        System.out.<span class="hl-function">println</span>(sb);
+    }
+}
+                    `,
+                    javascript: `
+<span class="hl-comment">// Node.js의 파일 시스템 모듈을 이용한 빠른 입출력</span>
+<span class="hl-keyword">const</span> fs = <span class="hl-function">require</span>(<span class="hl-string">'fs'</span>);
+<span class="hl-keyword">const</span> input = fs.<span class="hl-function">readFileSync</span>(<span class="hl-number">0</span>).<span class="hl-function">toString</span>().<span class="hl-function">trim</span>().<span class="hl-function">split</span>(<span class="hl-string">'\\n'</span>);
+
+<span class="hl-keyword">const</span> N = <span class="hl-function">parseInt</span>(input[<span class="hl-number">0</span>]);
+<span class="hl-keyword">const</span> numbers = input.<span class="hl-function">slice</span>(<span class="hl-number">1</span>).<span class="hl-function">map</span>(Number);
+
+<span class="hl-comment">// JavaScript의 sort()는 숫자 정렬 시 비교 함수가 필요합니다.</span>
+numbers.<span class="hl-function">sort</span>((a, b) => a - b);
+
+console.<span class="hl-function">log</span>(numbers.<span class="hl-function">join</span>(<span class="hl-string">'\\n'</span>));
+                    `
+                }
+            },
+            { // 6. 10989
+                title: "문제 6: 수 정렬하기 3 (백준 10989)",
+                description: "수의 개수가 매우 많지만(최대 10,000,000), 수의 범위는 1~10,000으로 제한된 특수한 경우입니다. 이럴 땐 계수 정렬(Counting Sort)이 압도적으로 효율적입니다.",
+                analysis: {
+                    time: "O(N + K): N은 수의 개수, K는 수의 범위(10,000)입니다. 비교 기반 정렬(O(N log N))보다 훨씬 빠릅니다.",
+                    memory: "O(K): 수의 범위만큼의 크기를 가진 배열(counts)이 필요합니다. 여기서는 약 10001 * 4bytes ≈ 40KB로 매우 효율적입니다.",
+                    accuracy: "정확함: 주어진 제약 조건(작은 수의 범위) 하에서 가장 이상적인 풀이입니다."
+                },
+                codes: {
+                    python: `
+<span class="hl-keyword">import</span> sys
+input = sys.stdin.readline
+N = <span class="hl-function">int</span>(<span class="hl-function">input</span>())
+
+<span class="hl-comment"># 수의 범위가 10000이므로, 크기 10001의 배열 선언</span>
+counts = [<span class="hl-number">0</span>] * <span class="hl-number">10001</span>
+
+<span class="hl-keyword">for</span> _ <span class="hl-keyword">in</span> <span class="hl-function">range</span>(N):
+    num = <span class="hl-function">int</span>(<span class="hl-function">input</span>())
+    counts[num] += <span class="hl-number">1</span>
+
+<span class="hl-keyword">for</span> i <span class="hl-keyword">in</span> <span class="hl-function">range</span>(<span class="hl-number">1</span>, <span class="hl-number">10001</span>):
+    <span class="hl-keyword">if</span> counts[i] > <span class="hl-number">0</span>:
+        <span class="hl-keyword">for</span> _ <span class="hl-keyword">in</span> <span class="hl-function">range</span>(counts[i]):
+            <span class="hl-function">print</span>(i)
+                    `,
+                    java: `
+<span class="hl-keyword">import</span> java.io.*;
+
+<span class="hl-keyword">public class</span> Main {
+    <span class="hl-keyword">public static void</span> <span class="hl-function">main</span>(String[] args) <span class="hl-keyword">throws</span> IOException {
+        BufferedReader <span class="hl-variable">br</span> = <span class="hl-keyword">new</span> BufferedReader(<span class="hl-keyword">new</span> InputStreamReader(System.in));
+        <span class="hl-type">int</span> N = Integer.<span class="hl-function">parseInt</span>(br.<span class="hl-function">readLine</span>());
+        <span class="hl-type">int</span>[] counts = <span class="hl-keyword">new</span> <span class="hl-type">int</span>[<span class="hl-number">10001</span>];
+
+        <span class="hl-keyword">for</span> (<span class="hl-type">int</span> i = <span class="hl-number">0</span>; i < N; i++) {
+            counts[Integer.<span class="hl-function">parseInt</span>(br.<span class="hl-function">readLine</span>())]++;
+        }
+
+        StringBuilder <span class="hl-variable">sb</span> = <span class="hl-keyword">new</span> StringBuilder();
+        <span class="hl-keyword">for</span>(<span class="hl-type">int</span> i = <span class="hl-number">1</span>; i < <span class="hl-number">10001</span>; i++){
+            <span class="hl-keyword">while</span>(counts[i] > <span class="hl-number">0</span>){
+                sb.<span class="hl-function">append</span>(i).<span class="hl-function">append</span>(<span class="hl-string">'\\n'</span>);
+                counts[i]--;
+            }
+        }
+        System.out.<span class="hl-function">println</span>(sb);
+    }
+}
+                    `,
+                    javascript: `
+<span class="hl-keyword">const</span> fs = <span class="hl-function">require</span>(<span class="hl-string">'fs'</span>);
+<span class="hl-keyword">const</span> input = fs.<span class="hl-function">readFileSync</span>(<span class="hl-number">0</span>).<span class="hl-function">toString</span>().<span class="hl-function">trim</span>().<span class="hl-function">split</span>(<span class="hl-string">'\\n'</span>).<span class="hl-function">map</span>(Number);
+<span class="hl-keyword">const</span> N = input[<span class="hl-number">0</span>];
+<span class="hl-keyword">const</span> counts = <span class="hl-keyword">new</span> <span class="hl-function">Array</span>(<span class="hl-number">10001</span>).<span class="hl-function">fill</span>(<span class="hl-number">0</span>);
+
+<span class="hl-keyword">for</span> (<span class="hl-keyword">let</span> i = <span class="hl-number">1</span>; i <= N; i++) {
+    counts[input[i]]++;
+}
+
+<span class="hl-keyword">let</span> result = <span class="hl-string">''</span>;
+<span class="hl-keyword">for</span> (<span class="hl-keyword">let</span> i = <span class="hl-number">1</span>; i <= <span class="hl-number">10000</span>; i++) {
+    <span class="hl-keyword">if</span> (counts[i] > <span class="hl-number">0</span>) {
+        result += (<span class="hl-string">\`\${i}\\n\`</span>).<span class="hl-function">repeat</span>(counts[i]);
+    }
+}
+console.<span class="hl-function">log</span>(result);
+                    `
+                }
+            },
+            { // 7. 11724
+                title: "문제 7: 연결 요소의 개수 (백준 11724)",
+                description: "방향 없는 그래프가 주어졌을 때, 연결 요소(Connected Component)의 개수를 세는 문제입니다. 한 정점에서 시작하여 방문할 수 있는 모든 정점을 탐색(DFS 또는 BFS)하고, 이 과정을 총 몇 번 반복하는지 세면 됩니다.",
+                analysis: {
+                    time: "O(V + E): V는 정점(Vertex)의 개수, E는 간선(Edge)의 개수입니다. 모든 정점과 간선을 한 번씩만 방문하므로 매우 효율적입니다.",
+                    memory: "O(V + E): 그래프를 인접 리스트로 저장하고, 정점 방문 여부를 기록할 배열이 필요합니다.",
+                    accuracy: "정확함: 그래프 탐색(DFS, BFS)은 연결 요소를 찾는 표준적이고 정확한 알고리즘입니다."
+                },
+                codes: {
+                    python: `
+<span class="hl-keyword">import</span> sys
+sys.<span class="hl-function">setrecursionlimit</span>(<span class="hl-number">10</span>**<span class="hl-number">6</span>)
+input = sys.stdin.readline
+
+<span class="hl-keyword">def</span> <span class="hl-function">dfs</span>(v):
+    visited[v] = <span class="hl-keyword">True</span>
+    <span class="hl-keyword">for</span> neighbor <span class="hl-keyword">in</span> graph[v]:
+        <span class="hl-keyword">if not</span> visited[neighbor]:
+            <span class="hl-function">dfs</span>(neighbor)
+
+N, M = <span class="hl-function">map</span>(<span class="hl-function">int</span>, <span class="hl-function">input</span>().<span class="hl-function">split</span>())
+graph = [[] <span class="hl-keyword">for</span> _ <span class="hl-keyword">in</span> <span class="hl-function">range</span>(N + <span class="hl-number">1</span>)]
+visited = [<span class="hl-keyword">False</span>] * (N + <span class="hl-number">1</span>)
+
+<span class="hl-keyword">for</span> _ <span class="hl-keyword">in</span> <span class="hl-function">range</span>(M):
+    u, v = <span class="hl-function">map</span>(<span class="hl-function">int</span>, <span class="hl-function">input</span>().<span class="hl-function">split</span>())
+    graph[u].<span class="hl-function">append</span>(v)
+    graph[v].<span class="hl-function">append</span>(u)
+
+component_count = <span class="hl-number">0</span>
+<span class="hl-keyword">for</span> i <span class="hl-keyword">in</span> <span class="hl-function">range</span>(<span class="hl-number">1</span>, N + <span class="hl-number">1</span>):
+    <span class="hl-keyword">if not</span> visited[i]:
+        <span class="hl-function">dfs</span>(i)
+        component_count += <span class="hl-number">1</span>
+
+<span class="hl-function">print</span>(component_count)
+                    `,
+                    java: `
+<span class="hl-keyword">import</span> java.util.*;
+<span class="hl-keyword">import</span> java.io.*;
+
+<span class="hl-keyword">public class</span> Main {
+    <span class="hl-keyword">static</span> ArrayList<<span class="hl-type">Integer</span>>[] graph;
+    <span class="hl-keyword">static boolean</span>[] visited;
+
+    <span class="hl-keyword">public static void</span> <span class="hl-function">main</span>(String[] args) <span class="hl-keyword">throws</span> IOException {
+        BufferedReader <span class="hl-variable">br</span> = <span class="hl-keyword">new</span> BufferedReader(<span class="hl-keyword">new</span> InputStreamReader(System.in));
+        StringTokenizer <span class="hl-variable">st</span> = <span class="hl-keyword">new</span> StringTokenizer(br.<span class="hl-function">readLine</span>());
+        <span class="hl-type">int</span> N = Integer.<span class="hl-function">parseInt</span>(st.<span class="hl-function">nextToken</span>());
+        <span class="hl-type">int</span> M = Integer.<span class="hl-function">parseInt</span>(st.<span class="hl-function">nextToken</span>());
+
+        graph = <span class="hl-keyword">new</span> ArrayList[N + <span class="hl-number">1</span>];
+        visited = <span class="hl-keyword">new boolean</span>[N + <span class="hl-number">1</span>];
+        <span class="hl-keyword">for</span>(<span class="hl-type">int</span> i = <span class="hl-number">1</span>; i <= N; i++) graph[i] = <span class="hl-keyword">new</span> ArrayList<>();
+
+        <span class="hl-keyword">for</span>(<span class="hl-type">int</span> i = <span class="hl-number">0</span>; i < M; i++) {
+            st = <span class="hl-keyword">new</span> StringTokenizer(br.<span class="hl-function">readLine</span>());
+            <span class="hl-type">int</span> u = Integer.<span class="hl-function">parseInt</span>(st.<span class="hl-function">nextToken</span>());
+            <span class="hl-type">int</span> v = Integer.<span class="hl-function">parseInt</span>(st.<span class="hl-function">nextToken</span>());
+            graph[u].<span class="hl-function">add</span>(v);
+            graph[v].<span class="hl-function">add</span>(u);
+        }
+
+        <span class="hl-type">int</span> count = <span class="hl-number">0</span>;
+        <span class="hl-keyword">for</span>(<span class="hl-type">int</span> i = <span class="hl-number">1</span>; i <= N; i++) {
+            <span class="hl-keyword">if</span> (!visited[i]) {
+                <span class="hl-function">dfs</span>(i);
+                count++;
+            }
+        }
+        System.out.<span class="hl-function">println</span>(count);
+    }
+    
+    <span class="hl-keyword">static void</span> <span class="hl-function">dfs</span>(<span class="hl-type">int</span> v) {
+        visited[v] = <span class="hl-keyword">true</span>;
+        <span class="hl-keyword">for</span> (<span class="hl-type">int</span> neighbor : graph[v]) {
+            <span class="hl-keyword">if</span> (!visited[neighbor]) {
+                <span class="hl-function">dfs</span>(neighbor);
+            }
+        }
+    }
+}
+                    `,
+                    javascript: `
+<span class="hl-keyword">const</span> fs = <span class="hl-function">require</span>(<span class="hl-string">'fs'</span>);
+<span class="hl-keyword">const</span> input = fs.<span class="hl-function">readFileSync</span>(<span class="hl-number">0</span>).<span class="hl-function">toString</span>().<span class="hl-function">trim</span>().<span class="hl-function">split</span>(<span class="hl-string">'\\n'</span>);
+
+<span class="hl-keyword">const</span> [N, M] = input[<span class="hl-number">0</span>].<span class="hl-function">split</span>(<span class="hl-string">' '</span>).<span class="hl-function">map</span>(Number);
+<span class="hl-keyword">const</span> graph = <span class="hl-function">Array</span>.<span class="hl-function">from</span>({ length: N + <span class="hl-number">1</span> }, () => []);
+<span class="hl-keyword">const</span> visited = <span class="hl-keyword">new</span> <span class="hl-function">Array</span>(N + <span class="hl-number">1</span>).<span class="hl-function">fill</span>(<span class="hl-keyword">false</span>);
+
+<span class="hl-keyword">for</span> (<span class="hl-keyword">let</span> i = <span class="hl-number">1</span>; i <= M; i++) {
+    <span class="hl-keyword">const</span> [u, v] = input[i].<span class="hl-function">split</span>(<span class="hl-string">' '</span>).<span class="hl-function">map</span>(Number);
+    graph[u].<span class="hl-function">push</span>(v);
+    graph[v].<span class="hl-function">push</span>(u);
+}
+
+<span class="hl-keyword">function</span> <span class="hl-function">dfs</span>(v) {
+    visited[v] = <span class="hl-keyword">true</span>;
+    <span class="hl-keyword">for</span> (<span class="hl-keyword">const</span> neighbor of graph[v]) {
+        <span class="hl-keyword">if</span> (!visited[neighbor]) {
+            <span class="hl-function">dfs</span>(neighbor);
+        }
+    }
+}
+
+<span class="hl-keyword">let</span> count = <span class="hl-number">0</span>;
+<span class="hl-keyword">for</span> (<span class="hl-keyword">let</span> i = <span class="hl-number">1</span>; i <= N; i++) {
+    <span class="hl-keyword">if</span> (!visited[i]) {
+        <span class="hl-function">dfs</span>(i);
+        count++;
+    }
+}
+console.<span class="hl-function">log</span>(count);
+                    `
+                }
+            },
+            { // 8. 1260 - NEW
+                title: "문제 8: DFS와 BFS (백준 1260)",
+                description: "그래프를 DFS로 탐색한 결과와 BFS로 탐색한 결과를 출력하는, 그래프 탐색의 가장 기초적인 문제입니다. 정점이 여러 개인 경우 정점 번호가 작은 것을 먼저 방문해야 합니다.",
+                analysis: {
+                    time: "O(V + E): V는 정점(Vertex)의 개수, E는 간선(Edge)의 개수입니다. 모든 정점과 간선을 한 번씩만 방문합니다. 인접 리스트를 정렬하는 데 O(E log E)가 추가될 수 있습니다.",
+                    memory: "O(V + E): 그래프(인접 리스트), 방문 배열, 그리고 DFS의 재귀 스택 또는 BFS의 큐를 위한 공간이 필요합니다.",
+                    accuracy: "정확함: DFS와 BFS는 그래프를 체계적으로 탐색하는 표준 알고리즘입니다. 문제의 요구사항(작은 번호 우선 방문)을 위해 인접 리스트 정렬이 필요합니다."
+                },
+                codes: {
+                    python: `
+<span class="hl-keyword">from</span> collections <span class="hl-keyword">import</span> deque
+<span class="hl-keyword">import</span> sys
+input = sys.stdin.readline
+
+<span class="hl-keyword">def</span> <span class="hl-function">dfs</span>(v):
+    visited[v] = <span class="hl-keyword">True</span>
+    dfs_result.<span class="hl-function">append</span>(v)
+    <span class="hl-keyword">for</span> i <span class="hl-keyword">in</span> graph[v]:
+        <span class="hl-keyword">if not</span> visited[i]:
+            <span class="hl-function">dfs</span>(i)
+
+<span class="hl-keyword">def</span> <span class="hl-function">bfs</span>(v):
+    queue = <span class="hl-function">deque</span>([v])
+    visited[v] = <span class="hl-keyword">True</span>
+    <span class="hl-keyword">while</span> queue:
+        now = queue.<span class="hl-function">popleft</span>()
+        bfs_result.<span class="hl-function">append</span>(now)
+        <span class="hl-keyword">for</span> i <span class="hl-keyword">in</span> graph[now]:
+            <span class="hl-keyword">if not</span> visited[i]:
+                queue.<span class="hl-function">append</span>(i)
+                visited[i] = <span class="hl-keyword">True</span>
+
+N, M, V = <span class="hl-function">map</span>(<span class="hl-function">int</span>, <span class="hl-function">input</span>().<span class="hl-function">split</span>())
+graph = [[] <span class="hl-keyword">for</span> _ <span class="hl-keyword">in</span> <span class="hl-function">range</span>(N + <span class="hl-number">1</span>)]
+<span class="hl-keyword">for</span> _ <span class="hl-keyword">in</span> <span class="hl-function">range</span>(M):
+    a, b = <span class="hl-function">map</span>(<span class="hl-function">int</span>, <span class="hl-function">input</span>().<span class="hl-function">split</span>())
+    graph[a].<span class="hl-function">append</span>(b)
+    graph[b].<span class="hl-function">append</span>(a)
+
+<span class="hl-comment"># 정점 번호가 작은 것을 먼저 방문하기 위해 정렬</span>
+<span class="hl-keyword">for</span> i <span class="hl-keyword">in</span> <span class="hl-function">range</span>(<span class="hl-number">1</span>, N + <span class="hl-number">1</span>):
+    graph[i].<span class="hl-function">sort</span>()
+
+dfs_result = []
+visited = [<span class="hl-keyword">False</span>] * (N + <span class="hl-number">1</span>)
+<span class="hl-function">dfs</span>(V)
+
+bfs_result = []
+visited = [<span class="hl-keyword">False</span>] * (N + <span class="hl-number">1</span>)
+<span class="hl-function">bfs</span>(V)
+
+<span class="hl-function">print</span>(*dfs_result)
+<span class="hl-function">print</span>(*bfs_result)
+                    `,
+                    java: `
+<span class="hl-keyword">import</span> java.util.*;
+<span class="hl-keyword">import</span> java.io.*;
+
+<span class="hl-keyword">public class</span> Main {
+    <span class="hl-keyword">static</span> ArrayList<<span class="hl-type">Integer</span>>[] graph;
+    <span class="hl-keyword">static boolean</span>[] visited;
+    <span class="hl-keyword">static</span> StringBuilder <span class="hl-variable">sb</span> = <span class="hl-keyword">new</span> StringBuilder();
+
+    <span class="hl-keyword">public static void</span> <span class="hl-function">main</span>(String[] args) <span class="hl-keyword">throws</span> IOException {
+        BufferedReader <span class="hl-variable">br</span> = <span class="hl-keyword">new</span> BufferedReader(<span class="hl-keyword">new</span> InputStreamReader(System.in));
+        StringTokenizer <span class="hl-variable">st</span> = <span class="hl-keyword">new</span> StringTokenizer(br.<span class="hl-function">readLine</span>());
+        <span class="hl-type">int</span> N = Integer.<span class="hl-function">parseInt</span>(st.<span class="hl-function">nextToken</span>());
+        <span class="hl-type">int</span> M = Integer.<span class="hl-function">parseInt</span>(st.<span class="hl-function">nextToken</span>());
+        <span class="hl-type">int</span> V = Integer.<span class="hl-function">parseInt</span>(st.<span class="hl-function">nextToken</span>());
+
+        graph = <span class="hl-keyword">new</span> ArrayList[N + <span class="hl-number">1</span>];
+        <span class="hl-keyword">for</span>(<span class="hl-type">int</span> i = <span class="hl-number">1</span>; i <= N; i++) graph[i] = <span class="hl-keyword">new</span> ArrayList<>();
+
+        <span class="hl-keyword">for</span>(<span class="hl-type">int</span> i = <span class="hl-number">0</span>; i < M; i++) {
+            st = <span class="hl-keyword">new</span> StringTokenizer(br.<span class="hl-function">readLine</span>());
+            <span class="hl-type">int</span> u = Integer.<span class="hl-function">parseInt</span>(st.<span class="hl-function">nextToken</span>());
+            <span class="hl-type">int</span> v = Integer.<span class="hl-function">parseInt</span>(st.<span class="hl-function">nextToken</span>());
+            graph[u].<span class="hl-function">add</span>(v);
+            graph[v].<span class="hl-function">add</span>(u);
+        }
+
+        <span class="hl-keyword">for</span>(<span class="hl-type">int</span> i = <span class="hl-number">1</span>; i <= N; i++) Collections.<span class="hl-function">sort</span>(graph[i]);
+        
+        visited = <span class="hl-keyword">new boolean</span>[N + <span class="hl-number">1</span>];
+        <span class="hl-function">dfs</span>(V);
+        sb.<span class="hl-function">append</span>(<span class="hl-string">"\\n"</span>);
+
+        visited = <span class="hl-keyword">new boolean</span>[N + <span class="hl-number">1</span>];
+        <span class="hl-function">bfs</span>(V);
+        
+        System.out.<span class="hl-function">println</span>(sb);
+    }
+    
+    <span class="hl-keyword">static void</span> <span class="hl-function">dfs</span>(<span class="hl-type">int</span> v) {
+        visited[v] = <span class="hl-keyword">true</span>;
+        sb.<span class="hl-function">append</span>(v).<span class="hl-function">append</span>(<span class="hl-string">" "</span>);
+        <span class="hl-keyword">for</span> (<span class="hl-type">int</span> neighbor : graph[v]) {
+            <span class="hl-keyword">if</span> (!visited[neighbor]) <span class="hl-function">dfs</span>(neighbor);
+        }
+    }
+    
+    <span class="hl-keyword">static void</span> <span class="hl-function">bfs</span>(<span class="hl-type">int</span> v) {
+        Queue<<span class="hl-type">Integer</span>> q = <span class="hl-keyword">new</span> LinkedList<>();
+        q.<span class="hl-function">add</span>(v);
+        visited[v] = <span class="hl-keyword">true</span>;
+        
+        <span class="hl-keyword">while</span>(!q.<span class="hl-function">isEmpty</span>()) {
+            <span class="hl-type">int</span> now = q.<span class="hl-function">poll</span>();
+            sb.<span class="hl-function">append</span>(now).<span class="hl-function">append</span>(<span class="hl-string">" "</span>);
+            <span class="hl-keyword">for</span>(<span class="hl-type">int</span> neighbor : graph[now]) {
+                <span class="hl-keyword">if</span>(!visited[neighbor]) {
+                    q.<span class="hl-function">add</span>(neighbor);
+                    visited[neighbor] = <span class="hl-keyword">true</span>;
+                }
+            }
+        }
+    }
+}
+                    `,
+                    javascript: `
+<span class="hl-keyword">const</span> fs = <span class="hl-function">require</span>(<span class="hl-string">'fs'</span>);
+<span class="hl-keyword">const</span> input = fs.<span class="hl-function">readFileSync</span>(<span class="hl-number">0</span>).<span class="hl-function">toString</span>().<span class="hl-function">trim</span>().<span class="hl-function">split</span>(<span class="hl-string">'\\n'</span>);
+
+<span class="hl-keyword">const</span> [N, M, V] = input[<span class="hl-number">0</span>].<span class="hl-function">split</span>(<span class="hl-string">' '</span>).<span class="hl-function">map</span>(Number);
+<span class="hl-keyword">const</span> graph = <span class="hl-function">Array</span>.<span class="hl-function">from</span>({ length: N + <span class="hl-number">1</span> }, () => []);
+<span class="hl-keyword">for</span> (<span class="hl-keyword">let</span> i = <span class="hl-number">1</span>; i <= M; i++) {
+    <span class="hl-keyword">const</span> [u, v] = input[i].<span class="hl-function">split</span>(<span class="hl-string">' '</span>).<span class="hl-function">map</span>(Number);
+    graph[u].<span class="hl-function">push</span>(v);
+    graph[v].<span class="hl-function">push</span>(u);
+}
+graph.<span class="hl-function">forEach</span>(adj => adj.<span class="hl-function">sort</span>((a, b) => a - b));
+
+<span class="hl-keyword">let</span> visited = <span class="hl-keyword">new</span> <span class="hl-function">Array</span>(N + <span class="hl-number">1</span>).<span class="hl-function">fill</span>(<span class="hl-keyword">false</span>);
+<span class="hl-keyword">let</span> dfsResult = [];
+<span class="hl-keyword">function</span> <span class="hl-function">dfs</span>(v) {
+    <span class="hl-keyword">if</span>(visited[v]) <span class="hl-keyword">return</span>;
+    visited[v] = <span class="hl-keyword">true</span>;
+    dfsResult.<span class="hl-function">push</span>(v);
+    <span class="hl-keyword">for</span> (<span class="hl-keyword">const</span> neighbor of graph[v]) {
+        <span class="hl-function">dfs</span>(neighbor);
+    }
+}
+<span class="hl-function">dfs</span>(V);
+
+visited = <span class="hl-keyword">new</span> <span class="hl-function">Array</span>(N + <span class="hl-number">1</span>).<span class="hl-function">fill</span>(<span class="hl-keyword">false</span>);
+<span class="hl-keyword">let</span> bfsResult = [];
+<span class="hl-keyword">function</span> <span class="hl-function">bfs</span>(start) {
+    <span class="hl-keyword">const</span> queue = [start];
+    visited[start] = <span class="hl-keyword">true</span>;
+    <span class="hl-keyword">while</span>(queue.<span class="hl-function">length</span> > <span class="hl-number">0</span>) {
+        <span class="hl-keyword">const</span> v = queue.<span class="hl-function">shift</span>();
+        bfsResult.<span class="hl-function">push</span>(v);
+        <span class="hl-keyword">for</span>(<span class="hl-keyword">const</span> neighbor of graph[v]) {
+            <span class="hl-keyword">if</span>(!visited[neighbor]) {
+                queue.<span class="hl-function">push</span>(neighbor);
+                visited[neighbor] = <span class="hl-keyword">true</span>;
+            }
+        }
+    }
+}
+<span class="hl-function">bfs</span>(V);
+
+console.<span class="hl-function">log</span>(dfsResult.<span class="hl-function">join</span>(<span class="hl-string">' '</span>));
+console.<span class="hl-function">log</span>(bfsResult.<span class="hl-function">join</span>(<span class="hl-string">' '</span>));
+                    `
+                }
+            }
+        ];
+
+        const navContainer = document.querySelector('nav');
+        const slidesContainer = document.getElementById('slides-container');
+        let currentSlide = 0;
+
+        function showSlide(index) {
+            // Update slides
+            const slides = slidesContainer.querySelectorAll('.slide');
+            slides.forEach((slide, i) => {
+                slide.classList.toggle('active', i === index);
+            });
+            
+            // Update nav buttons
+            const navButtons = navContainer.querySelectorAll('.nav-button');
+            navButtons.forEach((button, i) => {
+                button.classList.toggle('active', i === index);
+            });
+            currentSlide = index;
+        }
+
+        function showCode(slideIndex, lang) {
+            const slide = slidesContainer.querySelectorAll('.slide')[slideIndex];
+            
+            // Update tabs
+            const tabs = slide.querySelectorAll('.code-tab');
+            tabs.forEach(tab => {
+                tab.classList.toggle('active', tab.dataset.lang === lang);
+            });
+
+            // Update code blocks
+            const codeBlocks = slide.querySelectorAll('.code-block');
+            codeBlocks.forEach(block => {
+                block.classList.toggle('active', block.dataset.lang === lang);
+            });
+        }
+
+        // Initialize slides and navigation
+        slidesData.forEach((slide, index) => {
+            // Create nav button
+            const navButton = document.createElement('button');
+            navButton.className = 'nav-button font-semibold py-2 px-1 text-gray-300';
+            navButton.textContent = slide.title.split('(')[0].trim().replace("문제 "+(index+1)+": ", ""); // Extract problem name
+            navButton.onclick = () => showSlide(index);
+            navContainer.appendChild(navButton);
+
+            // Create slide
+            const slideElement = document.createElement('div');
+            slideElement.className = 'slide p-6 md:p-8';
+            slideElement.innerHTML = `
+                <h2 class="text-3xl font-bold mb-3 text-white">${slide.title}</h2>
+                <p class="mb-6 text-gray-300">${slide.description}</p>
+                
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <!-- 코드 섹션 -->
+                    <div>
+                        <div class="flex border-b border-gray-700 mb-4">
+                            <button class="code-tab py-2 px-4 font-medium" data-lang="python" onclick="showCode(${index}, 'python')">Python</button>
+                            <button class="code-tab py-2 px-4 font-medium" data-lang="java" onclick="showCode(${index}, 'java')">Java</button>
+                            <button class="code-tab py-2 px-4 font-medium" data-lang="javascript" onclick="showCode(${index}, 'javascript')">JavaScript</button>
+                        </div>
+                        <div>
+                            <div class="code-block" data-lang="python"><pre><code>${slide.codes.python}</code></pre></div>
+                            <div class="code-block" data-lang="java"><pre><code>${slide.codes.java}</code></pre></div>
+                            <div class="code-block" data-lang="javascript"><pre><code>${slide.codes.javascript}</code></pre></div>
+                        </div>
+                    </div>
+                    
+                    <!-- 분석 섹션 -->
+                    <div class="space-y-4">
+                        <div>
+                            <h3 class="text-xl font-semibold mb-2 text-pink-400">🕒 시간 복잡도 (Time Complexity)</h3>
+                            <p class="p-4 bg-gray-800 rounded-lg text-gray-300">${slide.analysis.time}</p>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-semibold mb-2 text-blue-400">💾 메모리 (Space Complexity)</h3>
+                            <p class="p-4 bg-gray-800 rounded-lg text-gray-300">${slide.analysis.memory}</p>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-semibold mb-2 text-green-400">✅ 정확성 (Correctness)</h3>
+                            <p class="p-4 bg-gray-800 rounded-lg text-gray-300">${slide.analysis.accuracy}</p>
+                        </div>
+                    </div>
+                </div>
+            `;
+            slidesContainer.appendChild(slideElement);
+        });
+
+        // Show the first slide and its Python code by default
+        if (slidesData.length > 0) {
+            showSlide(0);
+            showCode(0, 'python');
+        }
+
+    </script>
+</body>
+</html>
