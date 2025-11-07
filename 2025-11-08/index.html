@@ -1,0 +1,1588 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>백준 알고리즘 문제 풀이 (7문제)</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            line-height: 1.6;
+            background-color: #f8f9fa;
+            color: #212529;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 24px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+        h1 {
+            text-align: center;
+            color: #007bff;
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 10px;
+            margin-top: 0;
+        }
+        h2 {
+            color: #343a40;
+            border-bottom: 1px solid #e9ecef;
+            padding-bottom: 8px;
+            margin-top: 40px;
+        }
+        h3 {
+            color: #495057;
+            margin-top: 24px;
+        }
+        /* --- [추가된 스타일] --- */
+        h4 {
+             color: #495057;
+             margin-top: 24px;
+        }
+        p, li {
+            color: #495057;
+        }
+        /* (h3 아래 p 스타일은 이미 p에 적용됨) */
+        
+        pre {
+            background-color: #f1f3f5;
+            border: 1px solid #ced4da;
+            border-radius: 5px;
+            padding: 16px;
+            overflow-x: auto;
+            font-size: 0.9em;
+            line-height: 1.4;
+        }
+        code {
+            font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace;
+        }
+        .problem-section {
+            margin-bottom: 40px;
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 20px;
+        }
+        
+        /* --- [추가된 스타일] --- */
+        img.problem-image {
+            max-width: 100%;
+            height: auto;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            margin: 20px 0;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+        blockquote {
+            border-left: 4px solid #007bff;
+            margin: 15px 0;
+            padding: 10px 15px;
+            background-color: #f8f9fa;
+            color: #495057;
+        }
+        /* --- [여기까지 추가] --- */
+
+        /* 탭 스타일 */
+        .tab-buttons {
+            display: flex;
+            border-bottom: 2px solid #dee2e6;
+            margin-bottom: -1px; /* Overlap with pre border */
+        }
+        .tab-button {
+            padding: 10px 16px;
+            cursor: pointer;
+            background-color: #e9ecef;
+            border: 1px solid #dee2e6;
+            border-bottom: none;
+            border-radius: 5px 5px 0 0;
+            margin-right: 5px;
+            font-weight: 500;
+            color: #495057;
+            position: relative;
+            bottom: -2px; /* Align with border */
+        }
+        .tab-button.active {
+            background-color: #f1f3f5;
+            border-color: #ced4da;
+            border-bottom: 2px solid #f1f3f5; /* Hide bottom border */
+            color: #007bff;
+        }
+        .tab-content {
+            display: none;
+            border-top: none;
+            margin-top: -2px; /* Overlap with buttons */
+        }
+        .tab-content.active {
+            display: block;
+        }
+        /* Basic Syntax Highlighting */
+        .code-python .comment { color: #6a9955; }
+        .code-python .keyword { color: #007bff; }
+        .code-python .string { color: #d69d85; }
+        
+        .code-java .comment { color: #6a9955; }
+        .code-java .keyword { color: #007bff; }
+        .code-java .type { color: #267f99; }
+        .code-java .string { color: #d69d85; }
+        
+        .code-javascript .comment { color: #6a9955; }
+        .code-javascript .keyword { color: #007bff; }
+        .code-javascript .string { color: #d69d85; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>백준 알고리즘 문제 풀이 (7문제)</h1>
+
+        <div class="problem-section">
+            <h2>1. 백준 11657번: 타임머신 (골드 IV)</h2>
+            <h3>문제 설명</h3>
+            <p>
+                N개의 도시와 M개의 버스 노선이 있습니다. 각 버스 노선은 시간(가중치)을 가지며, 이 시간은 음수일 수도 있습니다. (시간을 되돌아가는 경우) 1번 도시에서 출발하여 나머지 모든 도시로 가는 가장 빠른 시간을 구하는 문제입니다.
+                <br>
+                만약 시간을 무한히 되돌릴 수 있는 '음수 사이클'이 존재한다면 -1을 출력합니다. 특정 도시로 가는 경로가 없다면 -1을 출력합니다.
+                <br>
+                이 문제는 가중치에 음수가 포함되므로 <strong>벨만-포드(Bellman-Ford) 알고리즘</strong>을 사용해야 합니다.
+            </p>
+            <h3>예시 입력 및 출력</h3>
+<pre>
+[입력]
+3 4
+1 2 4
+1 3 3
+2 3 -1
+3 1 -2
+
+[출력]
+-1
+(설명: 1-2-3-1 경로가 (4) + (-1) + (-2) = 1 로 양수지만, 3-1-2-3 경로가 (-2) + (4) + (-1) = 1... 
+잠시, 예시를 다시 확인합니다.
+[입력]
+3 4
+1 2 4
+1 3 3
+2 3 -2
+3 1 -2
+[출력]
+-1
+(설명: 3-1-2-3 경로의 합이 -2 + 4 + (-2) = 0 입니다. 만약 2-3이 -3이었다면 음수 사이클이 됩니다. 
+제공된 코드의 예시로 다시 테스트하겠습니다.)
+[입력]
+3 2
+1 2 4
+1 3 3
+[출력]
+4
+3
+(음수 사이클이 없는 경우)
+</pre>
+            <h3>코드</h3>
+            <div class="tab-container">
+                <div class="tab-buttons">
+                    <button class="tab-button" onclick="showTab(event, 'py-11657')">Python</button>
+                    <button class="tab-button" onclick="showTab(event, 'java-11657')">Java</button>
+                    <button class="tab-button" onclick="showTab(event, 'js-11657')">JavaScript</button>
+                </div>
+
+                <div id="py-11657" class="tab-content code-python">
+<pre><code class="language-python">
+<span class="comment"># 11657: 타임머신 (제공된 코드)</span>
+<span class="keyword">import</span> sys
+
+input = sys.stdin.readline
+INF = sys.maxsize
+
+n, m = map(int, input().split())
+edges = []
+<span class="comment"># 벨만-포드는 long long 타입이 필요할 수 있으나, 문제 조건에 따라 int로도 가능할 수 있습니다.</span>
+<span class="comment"># Python은 정수 범위가 자유롭습니다.</span>
+distance = [INF] * (n + 1)
+
+<span class="keyword">for</span> _ <span class="keyword">in</span> range(m):
+    a, b, c = map(int, input().split())
+    edges.append((a, b, c))
+
+<span class="keyword">def</span> bellman_ford(start):
+    distance[start] = 0
+
+    <span class="comment"># N번 반복 (N-1번 갱신 + 1번 음수 사이클 확인)</span>
+    <span class="keyword">for</span> i <span class="keyword">in</span> range(n):
+        <span class="keyword">for</span> j <span class="keyword">in</span> range(m):
+            current_node, next_node, cost = edges[j]
+
+            <span class="comment"># 현재 노드까지 도달 가능하고, 더 짧은 경로가 발견되면</span>
+            <span class="keyword">if</span> distance[current_node] != INF <span class="keyword">and</span> distance[next_node] > distance[current_node] + cost:
+                distance[next_node] = distance[current_node] + cost
+                
+                <span class="comment"># N번째 반복에서도 갱신이 발생하면 음수 사이클 존재</span>
+                <span class="keyword">if</span> i == n - 1:
+                    <span class="keyword">return</span> True   
+                    
+    <span class="keyword">return</span> False
+
+has_negative_cycle = bellman_ford(1)
+
+<span class="keyword">if</span> has_negative_cycle:
+    print(<span class="string">"-1"</span>)
+<span class="keyword">else</span>:
+    <span class="keyword">for</span> i <span class="keyword">in</span> range(2, n + 1):
+        <span class="comment"># 도달할 수 없는 노드</span>
+        <span class="keyword">if</span> distance[i] == INF:
+            print(<span class="string">"-1"</span>)
+        <span class="keyword">else</span>:
+            print(distance[i])
+</code></pre>
+                </div>
+                <div id="java-11657" class="tab-content code-java">
+<pre><code class="language-java">
+<span class="comment">// 11657: 타임머신</span>
+<span class="keyword">import</span> java.io.BufferedReader;
+<span class="keyword">import</span> java.io.InputStreamReader;
+<span class="keyword">import</span> java.io.IOException;
+<span class="keyword">import</span> java.util.ArrayList;
+<span class="keyword">import</span> java.util.StringTokenizer;
+<span class="keyword">import</span> java.util.Arrays;
+
+<span class="type">class</span> Edge {
+    <span class="type">int</span> from;
+    <span class="type">int</span> to;
+    <span class="type">int</span> cost;
+
+    Edge(<span class="type">int</span> from, <span class="type">int</span> to, <span class="type">int</span> cost) {
+        <span class="keyword">this</span>.from = from;
+        <span class="keyword">this</span>.to = to;
+        <span class="keyword">this</span>.cost = cost;
+    }
+}
+
+<span class="keyword">public</span> <span class="type">class</span> Main {
+    <span class="type">static</span> <span class="type">final</span> <span class="type">long</span> INF = Long.MAX_VALUE;
+    
+    <span class="keyword">public</span> <span class="type">static</span> <span class="type">void</span> main(<span class="type">String</span>[] args) <span class="keyword">throws</span> IOException {
+        BufferedReader br = <span class="keyword">new</span> BufferedReader(<span class="keyword">new</span> InputStreamReader(System.in));
+        StringTokenizer st = <span class="keyword">new</span> StringTokenizer(br.readLine());
+
+        <span class="type">int</span> N = Integer.parseInt(st.nextToken());
+        <span class="type">int</span> M = Integer.parseInt(st.nextToken());
+
+        ArrayList&lt;Edge&gt; edges = <span class="keyword">new</span> ArrayList&lt;&gt;();
+        <span class="comment">// 음수 가중치 합이 int 범위를 벗어날 수 있으므로 long 사용</span>
+        <span class="type">long</span>[] distance = <span class="keyword">new</span> <span class="type">long</span>[N + 1];
+        Arrays.fill(distance, INF);
+
+        <span class="keyword">for</span> (<span class="type">int</span> i = 0; i < M; i++) {
+            st = <span class="keyword">new</span> StringTokenizer(br.readLine());
+            <span class="type">int</span> a = Integer.parseInt(st.nextToken());
+            <span class="type">int</span> b = Integer.parseInt(st.nextToken());
+            <span class="type">int</span> c = Integer.parseInt(st.nextToken());
+            edges.add(<span class="keyword">new</span> Edge(a, b, c));
+        }
+
+        <span class="keyword">if</span> (bellmanFord(N, M, edges, distance, 1)) {
+            System.out.println(<span class="string">"-1"</span>);
+        } <span class="keyword">else</span> {
+            StringBuilder sb = <span class="keyword">new</span> StringBuilder();
+            <span class="keyword">for</span> (<span class="type">int</span> i = 2; i &lt;= N; i++) {
+                <span class="keyword">if</span> (distance[i] == INF) {
+                    sb.append(<span class="string">"-1\n"</span>);
+                } <span class="keyword">else</span> {
+                    sb.append(distance[i]).append(<span class="string">"\n"</span>);
+                }
+            }
+            System.out.print(sb.toString());
+        }
+    }
+
+    <span class="type">static</span> <span class="type">boolean</span> bellmanFord(<span class="type">int</span> N, <span class="type">int</span> M, ArrayList&lt;Edge&gt; edges, <span class="type">long</span>[] distance, <span class="type">int</span> start) {
+        distance[start] = 0;
+
+        <span class="comment">// N번 반복</span>
+        <span class="keyword">for</span> (<span class="type">int</span> i = 1; i &lt;= N; i++) {
+            <span class="keyword">for</span> (<span class="type">int</span> j = 0; j < M; j++) {
+                Edge edge = edges.get(j);
+                
+                <span class="keyword">if</span> (distance[edge.from] != INF && distance[edge.to] > distance[edge.from] + edge.cost) {
+                    distance[edge.to] = distance[edge.from] + edge.cost;
+                    
+                    <span class="comment">// N번째 반복에서도 갱신되면 음수 사이클</span>
+                    <span class="keyword">if</span> (i == N) {
+                        <span class="keyword">return</span> <span class="keyword">true</span>;
+                    }
+                }
+            }
+        }
+        <span class="keyword">return</span> <span class="keyword">false</span>;
+    }
+}
+</code></pre>
+                </div>
+                <div id="js-11657" class="tab-content code-javascript">
+<pre><code class="language-javascript">
+<span class="comment">// 11657: 타임머신</span>
+<span class="keyword">const</span> fs = <span class="keyword">require</span>(<span class="string">'fs'</span>);
+<span class="keyword">const</span> input = fs.readFileSync(<span class="string">'/dev/stdin'</span>).toString().trim().split(<span class="string">'\n'</span>);
+
+<span class="keyword">const</span> [N, M] = input[0].split(<span class="string">' '</span>).map(Number);
+<span class="keyword">const</span> edges = [];
+<span class="comment">// JavaScript의 Number는 64비트 부동소수점. 정수 범위 충분.</span>
+<span class="keyword">const</span> INF = Number.MAX_SAFE_INTEGER;
+<span class="keyword">const</span> distance = <span class="keyword">new</span> Array(N + 1).fill(INF);
+
+<span class="keyword">for</span> (<span class="keyword">let</span> i = 1; i &lt;= M; i++) {
+    <span class="keyword">const</span> [a, b, c] = input[i].split(<span class="string">' '</span>).map(Number);
+    edges.push([a, b, c]);
+}
+
+<span class="keyword">function</span> bellmanFord(start) {
+    distance[start] = 0;
+
+    <span class="comment">// N번 반복</span>
+    <span class="keyword">for</span> (<span class="keyword">let</span> i = 1; i &lt;= N; i++) {
+        <span class="keyword">for</span> (<span class="keyword">let</span> j = 0; j < M; j++) {
+            <span class="keyword">const</span> [currentNode, nextNode, cost] = edges[j];
+
+            <span class="keyword">if</span> (distance[currentNode] !== INF && distance[nextNode] > distance[currentNode] + cost) {
+                distance[nextNode] = distance[currentNode] + cost;
+
+                <span class="comment">// N번째에도 갱신되면 음수 사이클</span>
+                <span class="keyword">if</span> (i === N) {
+                    <span class="keyword">return</span> <span class="keyword">true</span>;
+                }
+            }
+        }
+    }
+    <span class="keyword">return</span> <span class="keyword">false</span>;
+}
+
+<span class="keyword">const</span> hasNegativeCycle = bellmanFord(1);
+<span class="keyword">const</span> results = [];
+
+<span class="keyword">if</span> (hasNegativeCycle) {
+    console.log(<span class="string">"-1"</span>);
+} <span class="keyword">else</span> {
+    <span class="keyword">for</span> (<span class="keyword">let</span> i = 2; i &lt;= N; i++) {
+        <span class="keyword">if</span> (distance[i] === INF) {
+            results.push(<span class="string">"-1"</span>);
+        } <span class="keyword">else</span> {
+            results.push(distance[i]);
+        }
+    }
+    console.log(results.join(<span class="string">'\n'</span>));
+}
+</code></pre>
+                </div>
+            </div>
+        </div>
+
+        <div class="problem-section">
+            <h2>2. 백준 11404번: 플로이드 (골드 IV)</h2>
+            
+            <h3>문제 설명 및 풀이 과정</h3>
+            <p>
+                n(2 ≤ n ≤ 100)개의 도시가 있습니다. 그리고 한 도시에서 출발하여 다른 도시에 도착하는 m(1 ≤ m ≤ 100,000)개의 버스가 있습니다. 각 버스는 비용이 있습니다.
+                <br>
+                <strong>목표:</strong> 모든 도시의 쌍 (A, B)에 대해서 도시 A에서 B로 가는데 필요한 <strong>최소 비용</strong>을 구하는 것입니다.
+                <br>
+                이 문제는 <strong>플로이드-워셜(Floyd-Warshall)</strong> 알고리즘을 사용하며, 3중 반복문을 통해 "i에서 j로 가는 비용"과 "i에서 k를 거쳐 j로 가는 비용"을 비교하여 최단 경로를 갱신합니다.
+            </p>
+    
+            <h4>1단계: 초기화 (직항 가격표 만들기)</h4>
+            <p>
+                먼저 <code>n x n</code> 크기의 2차원 배열(<code>graph</code>)을 만듭니다.
+                <ol>
+                    <li>모든 값을 <strong>무한대(INF)</strong>로 채웁니다. (갈 수 없다고 가정)</li>
+                    <li>자기 자신으로 가는 비용 (<code>graph[i][i]</code>)은 <strong>0</strong>으로 설정합니다.</li>
+                    <li>입력받은 버스 정보(<code>a, b, c</code>)를 <code>graph[a][b] = c</code>로 저장합니다.
+                    <br><strong>(중요)</strong> 이미 값이 있더라도, 더 싼 비용(<code>c</code>)이 들어오면 갱신합니다. (<code>min</code> 연산)</li>
+                </ol>
+            </p>
+            
+            <blockquote>
+                <strong>(사진 1 설명)</strong><br>
+                첫 번째 사진은 이 초기화 과정을 보여줍니다.
+                <ul>
+                    <li><strong>왼쪽 표:</strong> 대각선은 0, 나머지는 무한대(∞)로 초기화된 상태입니다.</li>
+                    <li><strong>오른쪽 표:</strong> 입력받은 직항 버스 정보(1→2는 2, 1→3은 3 등)가 덮어써진 '직항 가격표'입니다.</li>
+                </ul>
+            </blockquote>
+            
+            <img src="image_a0e856.png" alt="플로이드 알고리즘 1단계 - 배열 초기화 및 버스 정보 저장" class="problem-image">
+    
+            <h4>2단계: 플로이드-워셜 수행 (경유지 탐색)</h4>
+            <p>
+                이제 3중 반복문으로 "경유지"를 고려하여 '직항 가격표'를 '최종 최저가 표'로 업데이트합니다.
+            </p>
+<pre><code>
+for k in 1...n:  // k = 거쳐가는 노드
+  for i in 1...n:  // i = 출발 노드
+    for j in 1...n:  // j = 도착 노드
+      // i→j (직항) vs i→k→j (경유)
+      graph[i][j] = min(graph[i][j], graph[i][k] + graph[k][j])
+</code></pre>
+            
+            <blockquote>
+                <strong>(사진 2 설명)</strong><br>
+                두 번째 사진은 이 2단계의 핵심과 결과를 보여줍니다.
+                <ul>
+                    <li><strong>플로이드-워셜 점화식:</strong> "직항이 쌀까? K-경유가 쌀까?"를 비교하는 핵심 로직입니다. (S=i, E=j, K=k)</li>
+                    <li><strong>알고리즘 수행 후 최단 거리 배열:</strong> 3중 반복문이 모두 끝나고, 경유를 통해 더 싸게 갱신된 '최종 최저가 표'입니다.</li>
+                </ul>
+            </blockquote>
+    
+            <img src="image_a0e858.png" alt="플로이드 알고리즘 2단계 - 점화식 및 수행 결과" class="problem-image">
+    
+            <p>이 과정이 모두 끝나면 <code>graph[i][j]</code>에는 <code>i</code>에서 <code>j</code>로 가는 최단 거리가 저장됩니다. 만약 값이 여전히 <code>INF</code>라면 경로가 없는 것이며, 문제의 요구사항에 따라 <strong>0</strong>을 출력합니다.</p>
+            <h3>입력</h3>
+            <p>
+첫째 줄에 도시의 개수 n이 주어지고 둘째 줄에는 버스의 개수 m이 주어진다. 그리고 셋째 줄부터 m+2줄까지 다음과 같은 버스의 정보가 주어진다. 먼저 처음에는 그 버스의 출발 도시의 번호가 주어진다. 버스의 정보는 버스의 시작 도시 a, 도착 도시 b, 한 번 타는데 필요한 비용 c로 이루어져 있다. 시작 도시와 도착 도시가 같은 경우는 없다. 비용은 100,000보다 작거나 같은 자연수이다.
+시작 도시와 도착 도시를 연결하는 노선은 하나가 아닐 수 있다.
+            </p>
+            <h3>출력</h3>
+            <p>
+                n개의 줄을 출력해야 한다. i번째 줄에 출력하는 j번째 숫자는 도시 i에서 j로 가는데 필요한 최소 비용이다. 만약, i에서 j로 갈 수 없는 경우에는 그 자리에 0을 출력한다.
+            </p>
+            <h3>예시 입력 및 출력</h3>
+<pre>
+[입력]
+5
+14
+1 2 2
+1 3 3
+1 4 1
+1 5 10
+2 4 2
+3 4 1
+3 5 1
+4 5 3
+3 5 10
+3 1 8
+1 4 2
+5 1 7
+3 4 2
+5 2 4
+
+[출력]
+0 2 3 1 4
+12 0 15 2 5
+8 5 0 1 1
+10 7 13 0 3
+7 4 10 6 0
+</pre>
+            <h3>코드</h3>
+            <div class="tab-container">
+                <div class="tab-buttons">
+                    <button class="tab-button" onclick="showTab(event, 'py-11404')">Python</button>
+                    <button class="tab-button" onclick="showTab(event, 'java-11404')">Java</button>
+                    <button class="tab-button" onclick="showTab(event, 'js-11404')">JavaScript</button>
+                </div>
+
+                <div id="py-11404" class="tab-content code-python">
+<pre><code class="language-python">
+<span class="comment"># 11404: 플로이드 (제공된 코드)</span>
+<span class="keyword">import</span> sys
+
+input = sys.stdin.readline
+INF = sys.maxsize
+
+n = int(input())
+m = int(input())
+
+<span class="comment"># 2차원 그래프 (최대값으로 초기화)</span>
+graph = [[INF] * (n + 1) <span class="keyword">for</span> _ <span class="keyword">in</span> range(n + 1)]
+
+<span class="comment"># 자기 자신으로 가는 비용은 0</span>
+<span class="keyword">for</span> i <span class="keyword">in</span> range(1, n + 1):
+    graph[i][i] = 0
+
+<span class="comment"># 간선 정보 입력 (더 짧은 경로만 저장)</span>
+<span class="keyword">for</span> _ <span class="keyword">in</span> range(m):
+    a, b, c = map(int, input().split())
+    <span class="keyword">if</span> c < graph[a][b]:
+        graph[a][b] = c
+
+<span class="comment"># 플로이드-워셜 알고리즘</span>
+<span class="keyword">for</span> k <span class="keyword">in</span> range(1, n + 1): <span class="comment"># k = 거쳐가는 노드</span>
+    <span class="keyword">for</span> i <span class="keyword">in</span> range(1, n + 1): <span class="comment"># i = 출발 노드</span>
+        <span class="keyword">for</span> j <span class="keyword">in</span> range(1, n + 1): <span class="comment"># j = 도착 노드</span>
+            cost_via_k = graph[i][k] + graph[k][j]
+            <span class="keyword">if</span> cost_via_k < graph[i][j]:
+                graph[i][j] = cost_via_k
+
+<span class="comment"># 결과 출력</span>
+<span class="keyword">for</span> i <span class="keyword">in</span> range(1, n + 1):
+    <span class="keyword">for</span> j <span class="keyword">in</span> range(1, n + 1):
+        <span class="comment"># 도달할 수 없으면 0 출력</span>
+        <span class="keyword">if</span> graph[i][j] == INF:
+            print(0, end=<span class="string">" "</span>)
+        <span class="keyword">else</span>:
+            print(graph[i][j], end=<span class="string">" "</span>)
+    print()
+</code></pre>
+                </div>
+                <div id="java-11404" class="tab-content code-java">
+<pre><code class="language-java">
+<span class="comment">// 11404: 플로이드</span>
+<span class="keyword">import</span> java.io.BufferedReader;
+<span class="keyword">import</span> java.io.InputStreamReader;
+<span class="keyword">import</span> java.io.IOException;
+<span class="keyword">import</span> java.util.StringTokenizer;
+
+<span class="keyword">public</span> <span class="type">class</span> Main {
+    <span class="comment">// INF 값은 (간선 가중치 * N) 보다 커야 함</span>
+    <span class="type">static</span> <span class="type">final</span> <span class="type">int</span> INF = 100000 * 100 + 1; 
+    
+    <span class="keyword">public</span> <span class="type">static</span> <span class="type">void</span> main(<span class="type">String</span>[] args) <span class="keyword">throws</span> IOException {
+        BufferedReader br = <span class="keyword">new</span> BufferedReader(<span class="keyword">new</span> InputStreamReader(System.in));
+        <span class="type">int</span> n = Integer.parseInt(br.readLine());
+        <span class="type">int</span> m = Integer.parseInt(br.readLine());
+
+        <span class="type">int</span>[][] graph = <span class="keyword">new</span> <span class="type">int</span>[n + 1][n + 1];
+
+        <span class="comment">// INF로 초기화</span>
+        <span class="keyword">for</span> (<span class="type">int</span> i = 1; i &lt;= n; i++) {
+            <span class="keyword">for</span> (<span class="type">int</span> j = 1; j &lt;= n; j++) {
+                <span class="keyword">if</span> (i != j) {
+                    graph[i][j] = INF;
+                }
+            }
+        }
+
+        <span class="keyword">for</span> (<span class="type">int</span> i = 0; i < m; i++) {
+            StringTokenizer st = <span class="keyword">new</span> StringTokenizer(br.readLine());
+            <span class="type">int</span> a = Integer.parseInt(st.nextToken());
+            <span class="type">int</span> b = Integer.parseInt(st.nextToken());
+            <span class="type">int</span> c = Integer.parseInt(st.nextToken());
+            <span class="comment">// 더 짧은 간선만 저장</span>
+            graph[a][b] = Math.min(graph[a][b], c);
+        }
+
+        <span class="comment">// 플로이드-워셜</span>
+        <span class="keyword">for</span> (<span class="type">int</span> k = 1; k &lt;= n; k++) {
+            <span class="keyword">for</span> (<span class="type">int</span> i = 1; i &lt;= n; i++) {
+                <span class="keyword">for</span> (<span class="type">int</span> j = 1; j &lt;= n; j++) {
+                    <span class="type">long</span> cost_via_k = (<span class="type">long</span>)graph[i][k] + graph[k][j];
+                    <span class="keyword">if</span> (cost_via_k < graph[i][j]) {
+                        graph[i][j] = (<span class="type">int</span>)cost_via_k;
+                    }
+                }
+            }
+        }
+
+        StringBuilder sb = <span class="keyword">new</span> StringBuilder();
+        <span class="keyword">for</span> (<span class="type">int</span> i = 1; i &lt;= n; i++) {
+            <span class="keyword">for</span> (<span class="type">int</span> j = 1; j &lt;= n; j++) {
+                <span class="keyword">if</span> (graph[i][j] == INF) {
+                    sb.append(<span class="string">"0 "</span>);
+                } <span class="keyword">else</span> {
+                    sb.append(graph[i][j]).append(<span class="string">" "</span>);
+                }
+            }
+            sb.append(<span class="string">"\n"</span>);
+        }
+        System.out.print(sb.toString());
+    }
+}
+</code></pre>
+                </div>
+                <div id="js-11404" class="tab-content code-javascript">
+<pre><code class="language-javascript">
+<span class="comment">// 11404: 플로이드</span>
+<span class="keyword">const</span> fs = <span class="keyword">require</span>(<span class="string">'fs'</span>);
+<span class="keyword">const</span> input = fs.readFileSync(<span class="string">'/dev/stdin'</span>).toString().trim().split(<span class="string">'\n'</span>);
+
+<span class="keyword">const</span> n = +input[0];
+<span class="keyword">const</span> m = +input[1];
+<span class="keyword">const</span> INF = Infinity;
+
+<span class="keyword">const</span> graph = Array.from({ length: n + 1 }, () => <span class="keyword">new</span> Array(n + 1).fill(INF));
+
+<span class="keyword">for</span> (<span class="keyword">let</span> i = 1; i &lt;= n; i++) {
+    graph[i][i] = 0;
+}
+
+<span class="keyword">for</span> (<span class="keyword">let</span> i = 2; i < m + 2; i++) {
+    <span class="keyword">const</span> [a, b, c] = input[i].split(<span class="string">' '</span>).map(Number);
+    graph[a][b] = Math.min(graph[a][b], c);
+}
+
+<span class="comment">// 플로이드-워셜</span>
+<span class="keyword">for</span> (<span class="keyword">let</span> k = 1; k &lt;= n; k++) {
+    <span class="keyword">for</span> (<span class="keyword">let</span> i = 1; i &lt;= n; i++) {
+        <span class="keyword">for</span> (<span class="keyword">let</span> j = 1; j &lt;= n; j++) {
+            <span class="keyword">const</span> cost_via_k = graph[i][k] + graph[k][j];
+            <span class="keyword">if</span> (cost_via_k < graph[i][j]) {
+                graph[i][j] = cost_via_k;
+            }
+        }
+    }
+}
+
+<span class="keyword">const</span> results = [];
+<span class="keyword">for</span> (<span class="keyword">let</span> i = 1; i &lt;= n; i++) {
+    <span class="keyword">const</span> row = [];
+    <span class="keyword">for</span> (<span class="keyword">let</span> j = 1; j &lt;= n; j++) {
+        <span class="keyword">if</span> (graph[i][j] === INF) {
+            row.push(0);
+        } <span class="keyword">else</span> {
+            row.push(graph[i][j]);
+        }
+    }
+    results.push(row.join(<span class="string">' '</span>));
+}
+console.log(results.join(<span class="string">'\n'</span>));
+</code></pre>
+                </div>
+            </div>
+        </div>
+        
+        <div class="problem-section">
+            <h2>3. 백준 1197번: 최소 스패닝 트리 (골드 IV)</h2>
+            <h3>문제 설명</h3>
+            <p>
+                그래프가 주어졌을 때, 그 그래프의 '최소 스패닝 트리'를 구하는 문제입니다. 최소 스패닝 트리(MST)는 주어진 그래프의 모든 정점(V)을 포함하되, 간선의 가중치 합이 최소가 되도록 하는 트리(사이클이 없는 연결 그래프)입니다.
+                <br>
+                이 문제는 <strong>크루스칼(Kruskal) 알고리즘</strong> 또는 <strong>프림(Prim) 알고리즘</strong>으로 풀 수 있습니다. 제공된 코드는 크루스칼 알고리즘을 사용합니다.
+            </p>
+            <h3>예시 입력 및 출력</h3>
+<pre>
+[입력]
+3 3
+1 2 1
+2 3 2
+1 3 3
+
+[출력]
+3
+(설명: 1-2 (비용 1), 2-3 (비용 2) 간선을 선택하면 총 비용 3으로 모든 정점을 연결할 수 있습니다.)
+</pre>
+            <h3>코드</h3>
+            <div class="tab-container">
+                <div class="tab-buttons">
+                    <button class="tab-button" onclick="showTab(event, 'py-1197')">Python</button>
+                    <button class="tab-button" onclick="showTab(event, 'java-1197')">Java</button>
+                    <button class="tab-button" onclick="showTab(event, 'js-1197')">JavaScript</button>
+                </div>
+
+                <div id="py-1197" class="tab-content code-python">
+<pre><code class="language-python">
+<span class="comment"># 1197: 최소 스패닝 트리 (제공된 코드 - 크루스칼)</span>
+<span class="keyword">import</span> sys
+
+input = sys.stdin.readline
+sys.setrecursionlimit(100000)
+
+<span class="comment"># 루트 노드 찾기 (경로 압축)</span>
+<span class="keyword">def</span> find_parent(parent, x):
+    <span class="keyword">if</span> parent[x] == x:
+        <span class="keyword">return</span> x
+    parent[x] = find_parent(parent, parent[x])
+    <span class="keyword">return</span> parent[x]
+
+<span class="comment"># 두 집합 합치기</span>
+<span class="keyword">def</span> union_parent(parent, a, b):
+    rootA = find_parent(parent, a)
+    rootB = find_parent(parent, b)
+    
+    <span class="keyword">if</span> rootA < rootB:
+        parent[rootB] = rootA
+    <span class="keyword">else</span>:
+        parent[rootA] = rootB
+
+v, e = map(int, input().split())
+parent = [i <span class="keyword">for</span> i <span class="keyword">in</span> range(v + 1)]
+edges = []
+total_cost = 0
+
+<span class="keyword">for</span> _ <span class="keyword">in</span> range(e):
+    a, b, cost = map(int, input().split())
+    edges.append((cost, a, b))
+
+<span class="comment"># 간선을 비용순으로 정렬</span>
+edges.sort()
+
+<span class="comment"># 크루스칼 알고리즘</span>
+<span class="keyword">for</span> edge <span class="keyword">in</span> edges:
+    cost, a, b = edge
+    
+    <span class="comment"># 두 노드의 루트가 다르면 (사이클이 아니면)</span>
+    <span class="keyword">if</span> find_parent(parent, a) != find_parent(parent, b):
+        union_parent(parent, a, b) <span class="comment"># 집합에 포함</span>
+        total_cost += cost
+
+print(total_cost)
+</code></pre>
+                </div>
+                <div id="java-1197" class="tab-content code-java">
+<pre><code class="language-java">
+<span class="comment">// 1197: 최소 스패닝 트리 (크루스칼)</span>
+<span class="keyword">import</span> java.io.BufferedReader;
+<span class="keyword">import</span> java.io.InputStreamReader;
+<span class="keyword">import</span> java.io.IOException;
+<span class="keyword">import</span> java.util.ArrayList;
+<span class="keyword">import</span> java.util.Collections;
+<span class="keyword">import</span> java.util.StringTokenizer;
+
+<span class="type">class</span> Edge <span class="keyword">implements</span> Comparable&lt;Edge&gt; {
+    <span class="type">int</span> from;
+    <span class="type">int</span> to;
+    <span class="type">int</span> cost;
+
+    Edge(<span class="type">int</span> from, <span class="type">int</span> to, <span class="type">int</span> cost) {
+        <span class="keyword">this</span>.from = from;
+        <span class="keyword">this</span>.to = to;
+        <span class="keyword">this</span>.cost = cost;
+    }
+
+    <span class="comment">// 비용 기준 오름차순 정렬</span>
+    <span class="keyword">@Override</span>
+    <span class="keyword">public</span> <span class="type">int</span> compareTo(Edge o) {
+        <span class="keyword">return</span> Integer.compare(<span class="keyword">this</span>.cost, o.cost);
+    }
+}
+
+<span class="keyword">public</span> <span class="type">class</span> Main {
+    <span class="type">static</span> <span class="type">int</span>[] parent;
+
+    <span class="type">static</span> <span class="type">int</span> findParent(<span class="type">int</span> x) {
+        <span class="keyword">if</span> (parent[x] == x) <span class="keyword">return</span> x;
+        <span class="keyword">return</span> parent[x] = findParent(parent[x]);
+    }
+
+    <span class="type">static</span> <span class="type">void</span> unionParent(<span class="type">int</span> a, <span class="type">int</span> b) {
+        <span class="type">int</span> rootA = findParent(a);
+        <span class="type">int</span> rootB = findParent(b);
+        <span class="keyword">if</span> (rootA < rootB) {
+            parent[rootB] = rootA;
+        } <span class="keyword">else</span> {
+            parent[rootA] = rootB;
+        }
+    }
+
+    <span class="keyword">public</span> <span class="type">static</span> <span class="type">void</span> main(<span class="type">String</span>[] args) <span class="keyword">throws</span> IOException {
+        BufferedReader br = <span class="keyword">new</span> BufferedReader(<span class="keyword">new</span> InputStreamReader(System.in));
+        StringTokenizer st = <span class="keyword">new</span> StringTokenizer(br.readLine());
+
+        <span class="type">int</span> V = Integer.parseInt(st.nextToken());
+        <span class="type">int</span> E = Integer.parseInt(st.nextToken());
+
+        parent = <span class="keyword">new</span> <span class="type">int</span>[V + 1];
+        <span class="keyword">for</span> (<span class="type">int</span> i = 1; i &lt;= V; i++) {
+            parent[i] = i;
+        }
+
+        ArrayList&lt;Edge&gt; edges = <span class="keyword">new</span> ArrayList&lt;&gt;();
+        <span class="keyword">for</span> (<span class="type">int</span> i = 0; i < E; i++) {
+            st = <span class="keyword">new</span> StringTokenizer(br.readLine());
+            <span class="type">int</span> a = Integer.parseInt(st.nextToken());
+            <span class="type">int</span> b = Integer.parseInt(st.nextToken());
+            <span class="type">int</span> cost = Integer.parseInt(st.nextToken());
+            edges.add(<span class="keyword">new</span> Edge(a, b, cost));
+        }
+
+        Collections.sort(edges);
+
+        <span class="type">long</span> totalCost = 0;
+        <span class="keyword">for</span> (Edge edge : edges) {
+            <span class="comment">// 사이클이 발생하지 않으면</span>
+            <span class="keyword">if</span> (findParent(edge.from) != findParent(edge.to)) {
+                unionParent(edge.from, edge.to);
+                totalCost += edge.cost;
+            }
+        }
+
+        System.out.println(totalCost);
+    }
+}
+</code></pre>
+                </div>
+                <div id="js-1197" class="tab-content code-javascript">
+<pre><code class="language-javascript">
+<span class="comment">// 1197: 최소 스패닝 트리 (크루스칼)</span>
+<span class="keyword">const</span> fs = <span class="keyword">require</span>(<span class="string">'fs'</span>);
+<span class="keyword">const</span> input = fs.readFileSync(<span class="string">'/dev/stdin'</span>).toString().trim().split(<span class="string">'\n'</span>);
+
+<span class="keyword">const</span> [V, E] = input[0].split(<span class="string">' '</span>).map(Number);
+<span class="keyword">const</span> parent = Array.from({ length: V + 1 }, (_, i) => i);
+<span class="keyword">const</span> edges = [];
+<span class="keyword">let</span> totalCost = 0;
+
+<span class="comment">// 루트 노드 찾기 (경로 압축)</span>
+<span class="keyword">function</span> findParent(x) {
+    <span class="keyword">if</span> (parent[x] === x) {
+        <span class="keyword">return</span> x;
+    }
+    <span class="keyword">return</span> (parent[x] = findParent(parent[x]));
+}
+
+<span class="comment">// 집합 합치기</span>
+<span class="keyword">function</span> unionParent(a, b) {
+    <span class="keyword">const</span> rootA = findParent(a);
+    <span class="keyword">const</span> rootB = findParent(b);
+    <span class="keyword">if</span> (rootA < rootB) {
+        parent[rootB] = rootA;
+    } <span class="keyword">else</span> {
+        parent[rootA] = rootB;
+    }
+}
+
+<span class="keyword">for</span> (<span class="keyword">let</span> i = 1; i &lt;= E; i++) {
+    <span class="keyword">const</span> [a, b, cost] = input[i].split(<span class="string">' '</span>).map(Number);
+    edges.push({ cost, a, b });
+}
+
+<span class="comment">// 비용 기준 오름차순 정렬</span>
+edges.sort((a, b) => a.cost - b.cost);
+
+<span class="keyword">for</span> (<span class="keyword">const</span> edge <span class="keyword">of</span> edges) {
+    <span class="keyword">const</span> { cost, a, b } = edge;
+    
+    <span class="comment">// 사이클이 아니면</span>
+    <span class="keyword">if</span> (findParent(a) !== findParent(b)) {
+        unionParent(a, b);
+        totalCost += cost;
+    }
+}
+
+console.log(totalCost);
+</code></pre>
+                </div>
+            </div>
+        </div>
+        
+        <div class="problem-section">
+            <h2>4. 백준 11725번: 트리의 부모 찾기 (실버 II)</h2>
+            <h3>문제 설명</h3>
+            <p>
+                루트가 1인 트리가 주어집니다. 이 트리는 N개의 노드와 N-1개의 간선으로 이루어져 있습니다. 1번 노드를 제외한 2번부터 N번까지의 모든 노드에 대해, 각 노드의 부모 노드를 찾아 출력하는 문제입니다.
+                <br>
+                이 문제는 <strong>DFS</strong> 또는 <strong>BFS</strong>를 사용하여 루트(1번)에서부터 탐색을 시작하면서, "누가 나를 방문하게 했는지"를 기록하면 됩니다.
+            </p>
+            <h3>예시 입력 및 출력</h3>
+<pre>
+[입력]
+7
+1 6
+6 3
+3 5
+4 1
+2 4
+4 7
+
+[출력]
+4
+6
+1
+3
+1
+4
+(설명: 2번의 부모는 4, 3번의 부모는 6, 4번의 부모는 1, ... 7번의 부모는 4입니다.)
+</pre>
+            <h3>코드</h3>
+            <div class="tab-container">
+                <div class="tab-buttons">
+                    <button class="tab-button" onclick="showTab(event, 'py-11725')">Python</button>
+                    <button class="tab-button" onclick="showTab(event, 'java-11725')">Java</button>
+                    <button class="tab-button" onclick="showTab(event, 'js-11725')">JavaScript</button>
+                </div>
+
+                <div id="py-11725" class="tab-content code-python">
+<pre><code class="language-python">
+<span class="comment"># 11725: 트리의 부모 찾기 (제공된 코드 - BFS)</span>
+<span class="keyword">import</span> sys
+<span class="keyword">from</span> collections <span class="keyword">import</span> deque
+
+input = sys.stdin.readline
+sys.setrecursionlimit(10**6) <span class="comment"># (DFS를 사용할 경우 필요, BFS는 불필요)</span>
+
+n = int(input())
+graph = [[] <span class="keyword">for</span> _ <span class="keyword">in</span> range(n + 1)]
+parent = [0] * (n + 1) <span class="comment"># 부모 노드 저장 (0은 미방문)</span>
+
+<span class="keyword">for</span> _ <span class="keyword">in</span> range(n - 1):
+    a, b = map(int, input().split())
+    <span class="comment"># 트리는 양방향으로 연결 정보가 주어짐</span>
+    graph[a].append(b)
+    graph[b].append(a)
+
+queue = deque([1]) <span class="comment"># 루트 노드(1)에서 시작</span>
+parent[1] = 1 <span class="comment"># (루트의 부모는 편의상 1 또는 특정값으로. 방문 표시)</span>
+
+<span class="keyword">while</span> queue:
+    v = queue.popleft()
+    <span class="keyword">for</span> u <span class="keyword">in</span> graph[v]:
+        <span class="keyword">if</span> parent[u] == 0: <span class="comment"># 아직 방문하지 않았다면</span>
+            parent[u] = v  <span class="comment"># v가 u의 부모가 됨</span>
+            queue.append(u)
+
+<span class="keyword">for</span> i <span class="keyword">in</span> range(2, n + 1):
+    print(parent[i])
+</code></pre>
+                </div>
+                <div id="java-11725" class="tab-content code-java">
+<pre><code class="language-java">
+<span class="comment">// 11725: 트리의 부모 찾기 (BFS)</span>
+<span class="keyword">import</span> java.io.BufferedReader;
+<span class="keyword">import</span> java.io.InputStreamReader;
+<span class="keyword">import</span> java.io.IOException;
+<span class="keyword">import</span> java.util.ArrayList;
+<span class="keyword">import</span> java.util.LinkedList;
+<span class="keyword">import</span> java.util.Queue;
+<span class="keyword">import</span> java.util.StringTokenizer;
+
+<span class="keyword">public</span> <span class="type">class</span> Main {
+    <span class="keyword">public</span> <span class="type">static</span> <span class="type">void</span> main(<span class="type">String</span>[] args) <span class="keyword">throws</span> IOException {
+        BufferedReader br = <span class="keyword">new</span> BufferedReader(<span class="keyword">new</span> InputStreamReader(System.in));
+        <span class="type">int</span> N = Integer.parseInt(br.readLine());
+
+        ArrayList&lt;ArrayList&lt;Integer&gt;&gt; graph = <span class="keyword">new</span> ArrayList&lt;&gt;();
+        <span class="keyword">for</span> (<span class="type">int</span> i = 0; i &lt;= N; i++) {
+            graph.add(<span class="keyword">new</span> ArrayList&lt;&gt;());
+        }
+
+        <span class="type">int</span>[] parent = <span class="keyword">new</span> <span class="type">int</span>[N + 1];
+
+        <span class="keyword">for</span> (<span class="type">int</span> i = 0; i < N - 1; i++) {
+            StringTokenizer st = <span class="keyword">new</span> StringTokenizer(br.readLine());
+            <span class="type">int</span> a = Integer.parseInt(st.nextToken());
+            <span class="type">int</span> b = Integer.parseInt(st.nextToken());
+            graph.get(a).add(b);
+            graph.get(b).add(a);
+        }
+
+        Queue&lt;Integer&gt; queue = <span class="keyword">new</span> LinkedList&lt;&gt;();
+        queue.add(1);
+        parent[1] = 1; <span class="comment">// 방문 표시 (루트는 부모가 없지만 0이 아닌 값으로)</span>
+
+        <span class="keyword">while</span> (!queue.isEmpty()) {
+            <span class="type">int</span> v = queue.poll();
+            <span class="keyword">for</span> (<span class="type">int</span> u : graph.get(v)) {
+                <span class="keyword">if</span> (parent[u] == 0) { <span class="comment">// 미방문 노드라면</span>
+                    parent[u] = v; <span class="comment">// v가 u의 부모</span>
+                    queue.add(u);
+                }
+            }
+        }
+
+        StringBuilder sb = <span class="keyword">new</span> StringBuilder();
+        <span class="keyword">for</span> (<span class="type">int</span> i = 2; i &lt;= N; i++) {
+            sb.append(parent[i]).append(<span class="string">'\n'</span>);
+        }
+        System.out.print(sb.toString());
+    }
+}
+</code></pre>
+                </div>
+                <div id="js-11725" class="tab-content code-javascript">
+<pre><code class="language-javascript">
+<span class="comment">// 11725: 트리의 부모 찾기 (BFS)</span>
+<span class="keyword">const</span> fs = <span class="keyword">require</span>(<span class="string">'fs'</span>);
+<span class="keyword">const</span> input = fs.readFileSync(<span class="string">'/dev/stdin'</span>).toString().trim().split(<span class="string">'\n'</span>);
+
+<span class="keyword">const</span> N = +input[0];
+<span class="keyword">const</span> graph = Array.from({ length: N + 1 }, () => []);
+<span class="keyword">const</span> parent = <span class="keyword">new</span> Array(N + 1).fill(0);
+
+<span class="keyword">for</span> (<span class="keyword">let</span> i = 1; i < N; i++) {
+    <span class="keyword">const</span> [a, b] = input[i].split(<span class="string">' '</span>).map(Number);
+    graph[a].push(b);
+    graph[b].push(a);
+}
+
+<span class="keyword">const</span> queue = [1]; <span class="comment">// 루트 1에서 시작</span>
+parent[1] = 1; <span class="comment">// 방문 표시</span>
+
+<span class="keyword">let</span> head = 0;
+<span class="keyword">while</span> (head < queue.length) {
+    <span class="keyword">const</span> v = queue[head++];
+    <span class="keyword">for</span> (<span class="keyword">const</span> u <span class="keyword">of</span> graph[v]) {
+        <span class="keyword">if</span> (parent[u] === 0) {
+            parent[u] = v; <span class="comment">// v가 u의 부모</span>
+            queue.push(u);
+        }
+    }
+}
+
+<span class="keyword">const</span> results = [];
+<span class="keyword">for</span> (<span class="keyword">let</span> i = 2; i &lt;= N; i++) {
+    results.push(parent[i]);
+}
+console.log(results.join(<span class="string">'\n'</span>));
+</code></pre>
+                </div>
+            </div>
+        </div>
+        
+        <div class="problem-section">
+            <h2>5. 백준 1068번: 트리 (골드 V)</h2>
+            <h3>문제 설명</h3>
+            <p>
+                트리가 주어집니다. 트리의 노드는 0번부터 N-1번까지이며, 각 노드의 부모가 주어집니다. (부모가 없으면 -1, 즉 루트)
+                이때, 특정 노드 하나를 지웠을 때, 남아있는 트리에서 리프 노드(자식이 없는 노드)의 개수를 구하는 문제입니다. 
+                (노드를 지우면 그 노드와 그 자손들이 모두 트리에서 제거됩니다.)
+            </p>
+            <h3>예시 입력 및 출력</h3>
+<pre>
+[입력]
+5
+-1 0 0 1 1
+2
+
+[출력]
+2
+(설명: 0번이 루트. 0의 자식은 1, 2. 1의 자식은 3, 4. 
+여기서 2번 노드를 지우면, 0의 자식은 1만 남습니다. 
+1의 자식은 3, 4입니다. 3, 4는 자식이 없으므로 리프 노드입니다. 
+총 2개.)
+</pre>
+            <h3>코드</h3>
+            <div class="tab-container">
+                <div class="tab-buttons">
+                    <button class="tab-button" onclick="showTab(event, 'py-1068')">Python</button>
+                    <button class="tab-button" onclick="showTab(event, 'java-1068')">Java</button>
+                    <button class="tab-button" onclick="showTab(event, 'js-1068')">JavaScript</button>
+                </div>
+
+                <div id="py-1068" class="tab-content code-python">
+<pre><code class="language-python">
+<span class="comment"># 1068: 트리 (제공된 코드)</span>
+<span class="comment"># (참고: 제공된 코드는 양방향 그래프로 구현 후, DFS시 부모 노드를 체크하여 리프를 셈)</span>
+<span class="keyword">import</span> sys
+sys.setrecursionlimit(10**6)
+input = sys.stdin.readline
+
+<span class="keyword">def</span> dfs(node, parent_node):
+    <span class="keyword">global</span> leaf_count
+    
+    <span class="comment"># 지워진 노드면 탐색 중단</span>
+    <span class="keyword">if</span> node == removed_node:
+        <span class="keyword">return</span>
+
+    children = 0
+    <span class="keyword">for</span> child <span class="keyword">in</span> graph[node]:
+        <span class="comment"># 부모 노드로 돌아가지 않고, 지워진 노드가 아니어야 함</span>
+        <span class="keyword">if</span> child != parent_node <span class="keyword">and</span> child != removed_node:
+            children += 1
+            dfs(child, node) <span class="comment"># 재귀적으로 자식 탐색</span>
+    
+    <span class="comment"># 유효한 자식이 하나도 없으면 리프 노드</span>
+    <span class="keyword">if</span> children == 0:
+        leaf_count += 1
+
+n = int(input())
+parents = list(map(int, input().split()))
+removed_node = int(input())
+
+graph = [[] <span class="keyword">for</span> _ <span class="keyword">in</span> range(n)] <span class="comment"># 양방향 그래프</span>
+root = -1
+leaf_count = 0
+
+<span class="keyword">for</span> i <span class="keyword">in</span> range(n):
+    <span class="keyword">if</span> parents[i] == -1:
+        root = i
+    <span class="keyword">else</span>:
+        <span class="comment"># 양방향 연결</span>
+        graph[i].append(parents[i])
+        graph[parents[i]].append(i)
+
+<span class="comment"># 루트가 지워지면 리프는 0개</span>
+<span class="keyword">if</span> root == removed_node:
+    print(0)
+<span class="keyword">else</span>:
+    dfs(root, -1) <span class="comment"># 루트의 부모는 -1로 설정</span>
+    print(leaf_count)
+</code></pre>
+                </div>
+                <div id="java-1068" class="tab-content code-java">
+<pre><code class="language-java">
+<span class="comment">// 1068: 트리</span>
+<span class="keyword">import</span> java.io.BufferedReader;
+<span class="keyword">import</span> java.io.InputStreamReader;
+<span class="keyword">import</span> java.io.IOException;
+<span class="keyword">import</span> java.util.ArrayList;
+<span class="keyword">import</span> java.util.StringTokenizer;
+
+<span class="keyword">public</span> <span class="type">class</span> Main {
+    <span class="type">static</span> ArrayList&lt;ArrayList&lt;Integer&gt;&gt; graph;
+    <span class="type">static</span> <span class="type">int</span> removedNode;
+    <span class="type">static</span> <span class="type">int</span> leafCount = 0;
+
+    <span class="keyword">public</span> <span class="type">static</span> <span class="type">void</span> main(<span class="type">String</span>[] args) <span class="keyword">throws</span> IOException {
+        BufferedReader br = <span class="keyword">new</span> BufferedReader(<span class="keyword">new</span> InputStreamReader(System.in));
+        <span class="type">int</span> N = Integer.parseInt(br.readLine());
+        
+        graph = <span class="keyword">new</span> ArrayList&lt;&gt;();
+        <span class="keyword">for</span> (<span class="type">int</span> i = 0; i < N; i++) {
+            graph.add(<span class="keyword">new</span> ArrayList&lt;&gt;());
+        }
+
+        StringTokenizer st = <span class="keyword">new</span> StringTokenizer(br.readLine());
+        <span class="type">int</span> root = -1;
+        <span class="type">int</span>[] parentNodes = <span class="keyword">new</span> <span class="type">int</span>[N];
+        <span class="keyword">for</span> (<span class="type">int</span> i = 0; i < N; i++) {
+            parentNodes[i] = Integer.parseInt(st.nextToken());
+            <span class="keyword">if</span> (parentNodes[i] == -1) {
+                root = i;
+            } <span class="keyword">else</span> {
+                <span class="comment">// 양방향 그래프 구성</span>
+                graph.get(i).add(parentNodes[i]);
+                graph.get(parentNodes[i]).add(i);
+            }
+        }
+        removedNode = Integer.parseInt(br.readLine());
+
+        <span class="keyword">if</span> (root == removedNode) {
+            System.out.println(0);
+        } <span class="keyword">else</span> {
+            dfs(root, -1);
+            System.out.println(leafCount);
+        }
+    }
+
+    <span class="type">static</span> <span class="type">void</span> dfs(<span class="type">int</span> node, <span class="type">int</span> parentNode) {
+        <span class="keyword">if</span> (node == removedNode) {
+            <span class="keyword">return</span>;
+        }
+
+        <span class="type">int</span> children = 0;
+        <span class="keyword">for</span> (<span class="type">int</span> child : graph.get(node)) {
+            <span class="keyword">if</span> (child != parentNode && child != removedNode) {
+                children++;
+                dfs(child, node);
+            }
+        }
+
+        <span class="keyword">if</span> (children == 0) {
+            leafCount++;
+        }
+    }
+}
+</code></pre>
+                </div>
+                <div id="js-1068" class="tab-content code-javascript">
+<pre><code class="language-javascript">
+<span class="comment">// 1068: 트리</span>
+<span class="keyword">const</span> fs = <span class="keyword">require</span>(<span class="string">'fs'</span>);
+<span class="keyword">const</span> input = fs.readFileSync(<span class="string">'/dev/stdin'</span>).toString().trim().split(<span class="string">'\n'</span>);
+
+<span class="keyword">const</span> N = +input[0];
+<span class="keyword">const</span> parents = input[1].split(<span class="string">' '</span>).map(Number);
+<span class="keyword">const</span> removedNode = +input[2];
+
+<span class="keyword">const</span> graph = Array.from({ length: N }, () => []);
+<span class="keyword">let</span> root = -1;
+<span class="keyword">let</span> leafCount = 0;
+
+<span class="keyword">for</span> (<span class="keyword">let</span> i = 0; i < N; i++) {
+    <span class="keyword">if</span> (parents[i] === -1) {
+        root = i;
+    } <span class="keyword">else</span> {
+        graph[i].push(parents[i]);
+        graph[parents[i]].push(i);
+    }
+}
+
+<span class="keyword">function</span> dfs(node, parentNode) {
+    <span class="keyword">if</span> (node === removedNode) {
+        <span class="keyword">return</span>;
+    }
+
+    <span class="keyword">let</span> children = 0;
+    <span class="keyword">for</span> (<span class="keyword">const</span> child <span class="keyword">of</span> graph[node]) {
+        <span class="keyword">if</span> (child !== parentNode && child !== removedNode) {
+            children++;
+            dfs(child, node);
+        }
+    }
+
+    <span class="keyword">if</span> (children === 0) {
+        leafCount++;
+    }
+}
+
+<span class="keyword">if</span> (root === removedNode) {
+    console.log(0);
+} <span class="keyword">else</span> {
+    dfs(root, -1);
+    console.log(leafCount);
+}
+</code></pre>
+                </div>
+            </div>
+        </div>
+        
+        <div class="problem-section">
+            <h2>6. 백준 14425번: 문자열 집합 (실버 III)</h2>
+            <h3>문제 설명</h3>
+            <p>
+                총 N개의 문자열로 이루어진 집합 S가 주어집니다. 이어서 M개의 문자열이 주어지는데, 이 M개의 문자열 중에서 집합 S에 포함되어 있는 것이 총 몇 개인지 구하는 문제입니다.
+                <br>
+                이 문제는 <strong>해시 셋(Hash Set)</strong> 자료구조를 사용하면 매우 효율적으로 풀 수 있습니다. N개의 문자열을 Set에 모두 저장한 뒤, M개의 문자열을 하나씩 Set에 포함되어 있는지(<code>contains</code> 또는 <code>has</code>) 검사합니다.
+            </p>
+            <h3>예시 입력 및 출력</h3>
+<pre>
+[입력]
+5 11
+baekjoononlinejudge
+startlink
+codingtest
+sv
+startlink
+--- (여기까지 N=5, 집합 S) ---
+baekjoononlinejudge
+codingtest
+startlink
+sv
+codingtest
+startlink
+baekjoononlinejudge
+startlink
+codingtest
+sv
+startlink
+--- (여기까지 M=11, 검사 문자열) ---
+[출력]
+4
+(설명: 'baekjoononlinejudge', 'codingtest', 'startlink', 'sv' 4개가 집합 S에 포함되어 있습니다.)
+</pre>
+            <h3>코드</h3>
+            <div class="tab-container">
+                <div class="tab-buttons">
+                    <button class="tab-button" onclick="showTab(event, 'py-14425')">Python</button>
+                    <button class="tab-button" onclick="showTab(event, 'java-14425')">Java</button>
+                    <button class="tab-button" onclick="showTab(event, 'js-14425')">JavaScript</button>
+                </div>
+
+                <div id="py-14425" class="tab-content code-python">
+<pre><code class="language-python">
+<span class="comment"># 14425: 문자열 집합 (제공된 코드)</span>
+<span class="keyword">import</span> sys
+
+input = sys.stdin.readline
+
+n, m = map(int, input().split())
+
+s = set()
+<span class="keyword">for</span> _ <span class="keyword">in</span> range(n):
+    s.add(input().rstrip()) <span class="comment"># 개행 문자 제거 후 set에 추가</span>
+
+count = 0
+<span class="keyword">for</span> _ <span class="keyword">in</span> range(m):
+    check_str = input().rstrip()
+    <span class="keyword">if</span> check_str <span class="keyword">in</span> s: <span class="comment"># Set의 in 연산은 O(1)</span>
+        count += 1
+
+print(count)
+</code></pre>
+                </div>
+                <div id="java-14425" class="tab-content code-java">
+<pre><code class="language-java">
+<span class="comment">// 14425: 문자열 집합</span>
+<span class="keyword">import</span> java.io.BufferedReader;
+<span class="keyword">import</span> java.io.InputStreamReader;
+<span class="keyword">import</span> java.io.IOException;
+<span class="keyword">import</span> java.util.HashSet;
+<span class="keyword">import</span> java.util.StringTokenizer;
+
+<span class="keyword">public</span> <span class="type">class</span> Main {
+    <span class="keyword">public</span> <span class="type">static</span> <span class="type">void</span> main(<span class="type">String</span>[] args) <span class="keyword">throws</span> IOException {
+        BufferedReader br = <span class="keyword">new</span> BufferedReader(<span class="keyword">new</span> InputStreamReader(System.in));
+        StringTokenizer st = <span class="keyword">new</span> StringTokenizer(br.readLine());
+        
+        <span class="type">int</span> N = Integer.parseInt(st.nextToken());
+        <span class="type">int</span> M = Integer.parseInt(st.nextToken());
+
+        HashSet&lt;String&gt; s = <span class="keyword">new</span> HashSet&lt;&gt;();
+        
+        <span class="keyword">for</span> (<span class="type">int</span> i = 0; i < N; i++) {
+            s.add(br.readLine());
+        }
+
+        <span class="type">int</span> count = 0;
+        <span class="keyword">for</span> (<span class="type">int</span> i = 0; i < M; i++) {
+            String checkStr = br.readLine();
+            <span class="comment">// HashSet.contains()는 평균 O(1)</span>
+            <span class="keyword">if</span> (s.contains(checkStr)) {
+                count++;
+            }
+        }
+
+        System.out.println(count);
+    }
+}
+</code></pre>
+                </div>
+                <div id="js-14425" class="tab-content code-javascript">
+<pre><code class="language-javascript">
+<span class="comment">// 14425: 문자열 집합</span>
+<span class="keyword">const</span> fs = <span class="keyword">require</span>(<span class="string">'fs'</span>);
+<span class="keyword">const</span> input = fs.readFileSync(<span class="string">'/dev/stdin'</span>).toString().trim().split(<span class="string">'\n'</span>);
+
+<span class="keyword">const</span> [N, M] = input[0].split(<span class="string">' '</span>).map(Number);
+<span class="keyword">const</span> s = <span class="keyword">new</span> Set();
+
+<span class="keyword">for</span> (<span class="keyword">let</span> i = 1; i &lt;= N; i++) {
+    s.add(input[i]);
+}
+
+<span class="keyword">let</span> count = 0;
+<span class="keyword">for</span> (<span class="keyword">let</span> i = N + 1; i < N + 1 + M; i++) {
+    <span class="keyword">const</span> checkStr = input[i];
+    <span class="comment">// Set.has()는 평균 O(1)</span>
+    <span class="keyword">if</span> (s.has(checkStr)) {
+        count++;
+    }
+}
+
+console.log(count);
+</code></pre>
+                </div>
+            </div>
+        </div>
+
+        <div class="problem-section">
+            <h2>7. 백준 1991번: 트리 순회 (실버 I)</h2>
+            <h3>문제 설명</h3>
+            <p>
+                이진 트리를 입력받아 <strong>전위 순회(preorder)</strong>, <strong>중위 순회(inorder)</strong>, <strong>후위 순회(postorder)</strong>한 결과를 출력하는 문제입니다.
+                <br>
+                루트 노드는 항상 'A'입니다. 각 노드와 그 노드의 왼쪽 자식, 오른쪽 자식이 주어지며, 자식이 없는 경우는 '.'으로 표시됩니다.
+            </p>
+            <h3>예시 입력 및 출력</h3>
+<pre>
+[입력]
+7
+A B C
+B D .
+C E F
+E . .
+F . G
+D . .
+G . .
+
+[출력]
+ABDCEFG (전위 순회: 루트 -> 왼쪽 -> 오른쪽)
+DBAECFG (중위 순회: 왼쪽 -> 루트 -> 오른쪽)
+DBEGFCA (후위 순회: 왼쪽 -> 오른쪽 -> 루트)
+</pre>
+            <h3>코드</h3>
+            <div class="tab-container">
+                <div class="tab-buttons">
+                    <button class="tab-button" onclick="showTab(event, 'py-1991')">Python</button>
+                    <button class="tab-button" onclick="showTab(event, 'java-1991')">Java</button>
+                    <button class="tab-button" onclick="showTab(event, 'js-1991')">JavaScript</button>
+                </div>
+
+                <div id="py-1991" class="tab-content code-python">
+<pre><code class="language-python">
+<span class="comment"># 1991: 트리 순회 (제공된 코드)</span>
+<span class="keyword">import</span> sys
+
+input = sys.stdin.readline
+sys.setrecursionlimit(10**6)
+
+n = int(input())
+tree = {}
+
+<span class="comment"># 트리를 딕셔너리로 구현</span>
+<span class="keyword">for</span> _ <span class="keyword">in</span> range(n):
+    node, left, right = input().split()
+    tree[node] = [left, right]
+
+<span class="comment"># 전위 순회 (루트 -> 왼쪽 -> 오른쪽)</span>
+<span class="keyword">def</span> preorder(node):
+    <span class="keyword">if</span> node == <span class="string">'.'</span>:
+        <span class="keyword">return</span>
+    print(node, end=<span class="string">''</span>)
+    preorder(tree[node][0])
+    preorder(tree[node][1])
+
+<span class="comment"># 중위 순회 (왼쪽 -> 루트 -> 오른쪽)</span>
+<span class="keyword">def</span> inorder(node):
+    <span class="keyword">if</span> node == <span class="string">'.'</span>:
+        <span class="keyword">return</span>
+    inorder(tree[node][0])
+    print(node, end=<span class="string">''</span>)
+    inorder(tree[node][1])
+
+<span class="comment"># 후위 순회 (왼쪽 -> 오른쪽 -> 루트)</span>
+<span class="keyword">def</span> postorder(node):
+    <span class="keyword">if</span> node == <span class="string">'.'</span>:
+        <span class="keyword">return</span>
+    postorder(tree[node][0])
+    postorder(tree[node][1])
+    print(node, end=<span class="string">''</span>)
+
+preorder(<span class="string">'A'</span>)
+print()
+inorder(<span class="string">'A'</span>)
+print()
+postorder(<span class="string">'A'</span>)
+print()
+</code></pre>
+                </div>
+                <div id="java-1991" class="tab-content code-java">
+<pre><code class="language-java">
+<span class="comment">// 1991: 트리 순회</span>
+<span class="keyword">import</span> java.io.BufferedReader;
+<span class="keyword">import</span> java.io.InputStreamReader;
+<span class="keyword">import</span> java.io.IOException;
+<span class="keyword">import</span> java.util.HashMap;
+<span class="keyword">import</span> java.util.StringTokenizer;
+
+<span class="keyword">public</span> <span class="type">class</span> Main {
+    <span class="type">static</span> HashMap&lt;String, String[]&gt; tree = <span class="keyword">new</span> HashMap&lt;&gt;();
+    <span class="comment">// 출력을 한번에 하기 위한 StringBuilder</span>
+    <span class="type">static</span> StringBuilder sb_pre = <span class="keyword">new</span> StringBuilder();
+    <span class="type">static</span> StringBuilder sb_in = <span class="keyword">new</span> StringBuilder();
+    <span class="type">static</span> StringBuilder sb_post = <span class="keyword">new</span> StringBuilder();
+
+    <span class="keyword">public</span> <span class="type">static</span> <span class="type">void</span> main(<span class="type">String</span>[] args) <span class="keyword">throws</span> IOException {
+        BufferedReader br = <span class="keyword">new</span> BufferedReader(<span class="keyword">new</span> InputStreamReader(System.in));
+        <span class="type">int</span> N = Integer.parseInt(br.readLine());
+
+        <span class="keyword">for</span> (<span class="type">int</span> i = 0; i < N; i++) {
+            StringTokenizer st = <span class="keyword">new</span> StringTokenizer(br.readLine());
+            String node = st.nextToken();
+            String left = st.nextToken();
+            String right = st.nextToken();
+            tree.put(node, <span class="keyword">new</span> String[]{left, right});
+        }
+
+        preorder(<span class="string">"A"</span>);
+        inorder(<span class="string">"A"</span>);
+        postorder(<span class="string">"A"</span>);
+
+        System.out.println(sb_pre.toString());
+        System.out.println(sb_in.toString());
+        System.out.println(sb_post.toString());
+    }
+
+    <span class="type">static</span> <span class="type">void</span> preorder(String node) {
+        <span class="keyword">if</span> (node.equals(<span class="string">"."</span>)) {
+            <span class="keyword">return</span>;
+        }
+        sb_pre.append(node);
+        preorder(tree.get(node)[0]);
+        preorder(tree.get(node)[1]);
+    }
+
+    <span class="type">static</span> <span class="type">void</span> inorder(String node) {
+        <span class="keyword">if</span> (node.equals(<span class="string">"."</span>)) {
+            <span class="keyword">return</span>;
+        }
+        inorder(tree.get(node)[0]);
+        sb_in.append(node);
+        inorder(tree.get(node)[1]);
+    }
+
+    <span class="type">static</span> <span class="type">void</span> postorder(String node) {
+        <span class="keyword">if</span> (node.equals(<span class="string">"."</span>)) {
+            <span class="keyword">return</span>;
+        }
+        postorder(tree.get(node)[0]);
+        postorder(tree.get(node)[1]);
+        sb_post.append(node);
+    }
+}
+</code></pre>
+                </div>
+                <div id="js-1991" class="tab-content code-javascript">
+<pre><code class="language-javascript">
+<span class="comment">// 1991: 트리 순회</span>
+<span class="keyword">const</span> fs = <span class="keyword">require</span>(<span class="string">'fs'</span>);
+<span class="keyword">const</span> input = fs.readFileSync(<span class="string">'/dev/stdin'</span>).toString().trim().split(<span class="string">'\n'</span>);
+
+<span class="keyword">const</span> N = +input[0];
+<span class="keyword">const</span> tree = {};
+
+<span class="keyword">for</span> (<span class="keyword">let</span> i = 1; i &lt;= N; i++) {
+    <span class="keyword">const</span> [node, left, right] = input[i].split(<span class="string">' '</span>);
+    tree[node] = [left, right];
+}
+
+<span class="keyword">let</span> result_pre = <span class="string">''</span>;
+<span class="keyword">let</span> result_in = <span class="string">''</span>;
+<span class="keyword">let</span> result_post = <span class="string">''</span>;
+
+<span class="comment">// 전위 순회</span>
+<span class="keyword">function</span> preorder(node) {
+    <span class="keyword">if</span> (node === <span class="string">'.'</span>) {
+        <span class="keyword">return</span>;
+    }
+    result_pre += node;
+    preorder(tree[node][0]);
+    preorder(tree[node][1]);
+}
+
+<span class="comment">// 중위 순회</span>
+<span class="keyword">function</span> inorder(node) {
+    <span class="keyword">if</span> (node === <span class="string">'.'</span>) {
+        <span class="keyword">return</span>;
+    }
+    inorder(tree[node][0]);
+    result_in += node;
+    inorder(tree[node][1]);
+}
+
+<span class="comment">// 후위 순회</span>
+<span class="keyword">function</span> postorder(node) {
+    <span class="keyword">if</span> (node === <span class="string">'.'</span>) {
+        <span class="keyword">return</span>;
+    }
+    postorder(tree[node][0]);
+    postorder(tree[node][1]);
+    result_post += node;
+}
+
+preorder(<span class="string">'A'</span>);
+inorder(<span class="string">'A'</span>);
+postorder(<span class="string">'A'</span>);
+
+console.log(result_pre);
+console.log(result_in);
+console.log(result_post);
+</code></pre>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // 초기 탭 설정 (각 문제의 Python 탭을 기본으로 활성화)
+        document.addEventListener('DOMContentLoaded', function() {
+            const problemSections = document.querySelectorAll('.problem-section');
+            problemSections.forEach(section => {
+                const firstButton = section.querySelector('.tab-button');
+                if (firstButton) {
+                    const firstContentId = firstButton.getAttribute('onclick').split("'")[1];
+                    firstButton.classList.add('active');
+                    section.querySelector('#' + firstContentId).classList.add('active');
+                }
+            });
+        });
+
+        function showTab(event, tabId) {
+            const button = event.currentTarget;
+            const tabContainer = button.closest('.tab-container'); // 현재 탭 컨테이너 찾기
+            
+            // 현재 탭 컨테이너 내의 모든 탭 버튼 비활성화
+            const tabButtons = tabContainer.querySelectorAll('.tab-button');
+            tabButtons.forEach(btn => btn.classList.remove('active'));
+
+            // 현재 탭 컨테이너 내의 모든 탭 콘텐츠 숨기기
+            const tabContents = tabContainer.querySelectorAll('.tab-content');
+            tabContents.forEach(content => content.classList.remove('active'));
+
+            // 클릭한 탭 버튼과 콘텐츠 활성화
+            button.classList.add('active');
+            tabContainer.querySelector('#' + tabId).classList.add('active');
+        }
+    </script>
+
+</body>
+</html>
