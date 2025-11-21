@@ -1,0 +1,1255 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>백준 문제 풀이 모음</title>
+    <style>
+        body { font-family: 'Noto Sans KR', sans-serif; line-height: 1.6; color: #333; max-width: 1000px; margin: 0 auto; padding: 20px; background-color: #f9f9f9; }
+        h1 { text-align: center; border-bottom: 2px solid #333; padding-bottom: 10px; }
+        .problem-container { background: #fff; border: 1px solid #ddd; border-radius: 8px; padding: 20px; margin-bottom: 40px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        .problem-title { font-size: 1.5em; font-weight: bold; color: #007bff; margin-bottom: 15px; border-left: 5px solid #007bff; padding-left: 10px; }
+        .description, .io-section { margin-bottom: 20px; }
+        .section-title { font-weight: bold; margin-bottom: 5px; color: #555; }
+        .code-section { margin-top: 20px; }
+        .problem-image { max-width: 100%; border: 1px solid #eee; border-radius: 5px; margin-bottom: 15px; display: block; }
+        
+        /* Tabs */
+        .tabs { display: flex; border-bottom: 1px solid #ccc; }
+        .tab-button { background: #f1f1f1; border: none; outline: none; cursor: pointer; padding: 10px 20px; transition: 0.3s; font-weight: bold; border-radius: 5px 5px 0 0; margin-right: 2px; }
+        .tab-button:hover { background-color: #ddd; }
+        .tab-button.active { background-color: #fff; border: 1px solid #ccc; border-bottom: none; color: #007bff; }
+        
+        .tab-content { display: none; padding: 15px; border: 1px solid #ccc; border-top: none; background: #f8f9fa; border-radius: 0 0 5px 5px; overflow-x: auto; }
+        .tab-content.active { display: block; }
+        
+        pre { margin: 0; font-family: 'Consolas', 'Monaco', monospace; font-size: 0.95em; }
+        code { color: #d63384; }
+    </style>
+</head>
+<body>
+
+    <h1>백준 문제 풀이 모음</h1>
+
+    <div class="problem-container">
+        <div class="problem-title">2042번: 구간 합 구하기</div>
+        <div class="description">
+            <div class="section-title">문제 설명</div>
+            <p>어떤 N개의 수가 주어져 있다. 그런데 중간에 수의 변경이 빈번히 일어나고 그 중간에 어떤 부분의 합을 구하려 한다. 데이터 변경과 구간 합 구하기가 빈번하게 일어날 때 효율적으로 처리하는 프로그램을 작성하시오.</p>
+        </div>
+        <div class="io-section">
+            <div class="section-title">입력</div>
+            <p>첫째 줄에 수의 개수 N(1 ≤ N ≤ 1,000,000)과 M(1 ≤ M ≤ 10,000), K(1 ≤ K ≤ 10,000) 가 주어진다. 둘째 줄부터 N+1번째 줄까지 N개의 수가 주어진다. 그 후 M+K개의 줄에 a, b, c가 주어진다. a가 1인 경우 b번째 수를 c로 바꾸고, a가 2인 경우 b번째부터 c번째까지의 합을 구한다.</p>
+            <div class="section-title">출력</div>
+            <p>a가 2인 경우에 대해, 구한 구간의 합을 각 줄에 출력한다.</p>
+        </div>
+
+        <div class="code-section">
+            <div class="tabs">
+                <button class="tab-button active" onclick="openTab(event, 'p2042-py')">Python</button>
+                <button class="tab-button" onclick="openTab(event, 'p2042-java')">Java</button>
+                <button class="tab-button" onclick="openTab(event, 'p2042-js')">JavaScript</button>
+            </div>
+            <div id="p2042-py" class="tab-content active">
+<pre>import sys
+input = sys.stdin.readline
+
+def update(i, diff):
+    while i <= N:
+        tree[i] += diff
+        # 비트 연산을 통해 현재 노드가 포함된 다음 구간(부모/오른쪽)으로 이동
+        i += (i & -i)
+
+def prefix_sum(i):
+    result = 0
+    while i > 0:
+        result += tree[i]
+        # 비트 연산을 통해 0이 될 때까지 구간 합을 누적하며 이동
+        i -= (i & -i)
+    return result
+
+def interval_sum(start, end):
+    # 구간 합 공식: (1~end까지의 합) - (1~start-1까지의 합)
+    return prefix_sum(end) - prefix_sum(start - 1)
+
+N, M, K = map(int, input().split())
+
+arr = [0] * (N + 1)
+tree = [0] * (N + 1)
+
+for i in range(1, N + 1):
+    x = int(input())
+    arr[i] = x
+    update(i, x)
+
+for _ in range(M + K):
+    a, b, c = map(int, input().split())
+    
+    if a == 1:
+        diff = c - arr[b] # 바뀐 값과 기존 값의 차이를 계산
+        arr[b] = c        # 원본 배열 값 갱신 (다음 차이 계산을 위해)
+        update(b, diff)   # 차이만큼만 트리 갱신
+    else:
+        print(interval_sum(b, c))</pre>
+            </div>
+            <div id="p2042-java" class="tab-content">
+<pre>import java.io.*;
+import java.util.*;
+
+public class Main {
+    static long[] tree;
+    static long[] arr;
+    static int N;
+
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer st = new StringTokenizer(br.readLine());
+
+        N = Integer.parseInt(st.nextToken());
+        int M = Integer.parseInt(st.nextToken());
+        int K = Integer.parseInt(st.nextToken());
+
+        arr = new long[N + 1];
+        tree = new long[N + 1];
+
+        for (int i = 1; i <= N; i++) {
+            long x = Long.parseLong(br.readLine());
+            arr[i] = x;
+            update(i, x);
+        }
+
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < M + K; i++) {
+            st = new StringTokenizer(br.readLine());
+            int a = Integer.parseInt(st.nextToken());
+            int b = Integer.parseInt(st.nextToken());
+            long c = Long.parseLong(st.nextToken());
+
+            if (a == 1) {
+                long diff = c - arr[b];
+                arr[b] = c;
+                update(b, diff);
+            } else {
+                sb.append(intervalSum(b, (int) c)).append("\n");
+            }
+        }
+        System.out.print(sb);
+    }
+
+    static void update(int i, long diff) {
+        while (i <= N) {
+            tree[i] += diff;
+            i += (i & -i);
+        }
+    }
+
+    static long prefixSum(int i) {
+        long result = 0;
+        while (i > 0) {
+            result += tree[i];
+            i -= (i & -i);
+        }
+        return result;
+    }
+
+    static long intervalSum(int start, int end) {
+        return prefixSum(end) - prefixSum(start - 1);
+    }
+}</pre>
+            </div>
+            <div id="p2042-js" class="tab-content">
+<pre>const fs = require('fs');
+const input = fs.readFileSync('/dev/stdin').toString().trim().split('\n');
+
+const [N, M, K] = input[0].split(' ').map(Number);
+const arr = new Array(N + 1).fill(BigInt(0));
+const tree = new Array(N + 1).fill(BigInt(0));
+
+function update(i, diff) {
+    while (i <= N) {
+        tree[i] += diff;
+        i += (i & -i);
+    }
+}
+
+function prefixSum(i) {
+    let result = BigInt(0);
+    while (i > 0) {
+        result += tree[i];
+        i -= (i & -i);
+    }
+    return result;
+}
+
+function intervalSum(start, end) {
+    return prefixSum(end) - prefixSum(start - 1);
+}
+
+let lineIdx = 1;
+for (let i = 1; i <= N; i++) {
+    let x = BigInt(input[lineIdx++]);
+    arr[i] = x;
+    update(i, x);
+}
+
+let output = [];
+for (let i = 0; i < M + K; i++) {
+    let [a, b, c] = input[lineIdx++].split(' ');
+    a = Number(a);
+    b = Number(b);
+    
+    if (a === 1) {
+        c = BigInt(c);
+        let diff = c - arr[b];
+        arr[b] = c;
+        update(b, diff);
+    } else {
+        c = Number(c);
+        output.push(intervalSum(b, c).toString());
+    }
+}
+console.log(output.join('\n'));</pre>
+            </div>
+        </div>
+    </div>
+
+    <div class="problem-container">
+        <div class="problem-title">11437번: LCA</div>
+        <div class="description">
+            <div class="section-title">문제 설명</div>
+            <p>N(2 ≤ N ≤ 50,000)개의 정점으로 이루어진 트리가 주어진다. 트리의 각 정점은 1번부터 N번까지 번호가 매겨져 있으며, 루트는 1번이다. 두 노드의 쌍 M(1 ≤ M ≤ 10,000)개가 주어졌을 때, 두 노드의 가장 가까운 공통 조상이 몇 번인지 출력한다.</p>
+        </div>
+        <div class="io-section">
+            <div class="section-title">입력</div>
+            <p>첫째 줄에 노드의 개수 N이 주어지고, 다음 N-1개 줄에는 트리 상에서 연결된 두 정점이 주어진다. 그 다음 줄에는 M이 주어지고, 다음 M개 줄에는 정점 쌍이 주어진다.</p>
+            <div class="section-title">출력</div>
+            <p>M개의 줄에 차례대로 입력받은 두 정점의 가장 가까운 공통 조상을 출력한다.</p>
+        </div>
+
+        <div class="code-section">
+            <div class="tabs">
+                <button class="tab-button active" onclick="openTab(event, 'p11437-py')">Python</button>
+                <button class="tab-button" onclick="openTab(event, 'p11437-java')">Java</button>
+                <button class="tab-button" onclick="openTab(event, 'p11437-js')">JavaScript</button>
+            </div>
+            <div id="p11437-py" class="tab-content active">
+<pre>import sys
+sys.setrecursionlimit(10**5) # 깊은 트리를 탐색하기 위해 재귀 깊이 해제
+input = sys.stdin.readline
+
+N = int(input())
+graph = [[] for _ in range(N + 1)]
+
+for _ in range(N - 1):
+    a, b = map(int, input().split())
+    graph[a].append(b)
+    graph[b].append(a)
+
+# 각 노드의 부모와 깊이를 저장할 리스트
+parent = [0] * (N + 1)
+depth = [0] * (N + 1)
+visited = [False] * (N + 1)
+
+def dfs(node, d):
+    visited[node] = True
+    depth[node] = d
+    for child in graph[node]:
+        if not visited[child]:
+            parent[child] = node
+            dfs(child, d + 1) # 자식 노드로 내려가며 깊이 1 증가
+
+# 루트 노드(1번)부터 깊이와 부모 계산 시작
+dfs(1, 0)
+
+def lca(a, b):
+    # 두 노드의 깊이가 다르면, 깊이가 깊은 노드를 위로 올림
+    while depth[a] != depth[b]:
+        if depth[a] > depth[b]:
+            a = parent[a]
+        else:
+            b = parent[b]
+    
+    # 깊이를 맞춘 상태에서 두 노드가 같아질 때까지 위로 올림
+    while a != b:
+        a = parent[a]
+        b = parent[b]
+        
+    return a
+
+M = int(input())
+for _ in range(M):
+    a, b = map(int, input().split())
+    print(lca(a, b))</pre>
+            </div>
+            <div id="p11437-java" class="tab-content">
+<pre>import java.io.*;
+import java.util.*;
+
+public class Main {
+    static ArrayList<Integer>[] graph;
+    static int[] parent;
+    static int[] depth;
+    static boolean[] visited;
+
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer st;
+
+        int N = Integer.parseInt(br.readLine());
+        graph = new ArrayList[N + 1];
+        for (int i = 1; i <= N; i++) graph[i] = new ArrayList<>();
+
+        for (int i = 0; i < N - 1; i++) {
+            st = new StringTokenizer(br.readLine());
+            int a = Integer.parseInt(st.nextToken());
+            int b = Integer.parseInt(st.nextToken());
+            graph[a].add(b);
+            graph[b].add(a);
+        }
+
+        parent = new int[N + 1];
+        depth = new int[N + 1];
+        visited = new boolean[N + 1];
+        
+        dfs(1, 0);
+
+        int M = Integer.parseInt(br.readLine());
+        StringBuilder sb = new StringBuilder();
+        
+        for (int i = 0; i < M; i++) {
+            st = new StringTokenizer(br.readLine());
+            int a = Integer.parseInt(st.nextToken());
+            int b = Integer.parseInt(st.nextToken());
+            sb.append(lca(a, b)).append("\n");
+        }
+        System.out.print(sb);
+    }
+
+    static void dfs(int node, int d) {
+        visited[node] = true;
+        depth[node] = d;
+        for (int child : graph[node]) {
+            if (!visited[child]) {
+                parent[child] = node;
+                dfs(child, d + 1);
+            }
+        }
+    }
+
+    static int lca(int a, int b) {
+        while (depth[a] != depth[b]) {
+            if (depth[a] > depth[b]) a = parent[a];
+            else b = parent[b];
+        }
+        while (a != b) {
+            a = parent[a];
+            b = parent[b];
+        }
+        return a;
+    }
+}</pre>
+            </div>
+            <div id="p11437-js" class="tab-content">
+<pre>const fs = require('fs');
+const input = fs.readFileSync('/dev/stdin').toString().trim().split('\n');
+
+const N = Number(input[0]);
+const graph = Array.from({ length: N + 1 }, () => []);
+
+let lineIdx = 1;
+for (let i = 0; i < N - 1; i++) {
+    const [a, b] = input[lineIdx++].split(' ').map(Number);
+    graph[a].push(b);
+    graph[b].push(a);
+}
+
+const parent = new Array(N + 1).fill(0);
+const depth = new Array(N + 1).fill(0);
+const visited = new Array(N + 1).fill(false);
+
+// Stack based DFS to avoid recursion limit in JS
+const stack = [[1, 0]];
+visited[1] = true;
+
+while(stack.length > 0) {
+    const [node, d] = stack.pop();
+    depth[node] = d;
+    
+    for(const child of graph[node]) {
+        if(!visited[child]) {
+            visited[child] = true;
+            parent[child] = node;
+            stack.push([child, d + 1]);
+        }
+    }
+}
+
+function lca(a, b) {
+    while (depth[a] !== depth[b]) {
+        if (depth[a] > depth[b]) a = parent[a];
+        else b = parent[b];
+    }
+    while (a !== b) {
+        a = parent[a];
+        b = parent[b];
+    }
+    return a;
+}
+
+const M = Number(input[lineIdx++]);
+const result = [];
+for (let i = 0; i < M; i++) {
+    const [a, b] = input[lineIdx++].split(' ').map(Number);
+    result.push(lca(a, b));
+}
+console.log(result.join('\n'));</pre>
+            </div>
+        </div>
+    </div>
+
+    <div class="problem-container">
+        <div class="problem-title">11438번: LCA 2</div>
+        <div class="description">
+            <div class="section-title">문제 설명</div>
+            <p>N(2 ≤ N ≤ 100,000)개의 정점으로 이루어진 트리가 주어진다. M(1 ≤ M ≤ 100,000)개의 두 노드 쌍에 대해 가장 가까운 공통 조상을 구하시오. (시간 제한이 중요하므로 O(log N) 알고리즘 필요)</p>
+        </div>
+        <div class="io-section">
+            <div class="section-title">입력</div>
+            <p>첫째 줄에 N이 주어진다. 다음 N-1개 줄에 트리 연결 정보가 주어진다. 그 다음 줄에 M이 주어지고, 이어지는 M개 줄에 정점 쌍이 주어진다.</p>
+            <div class="section-title">출력</div>
+            <p>M개의 줄에 각 쌍의 LCA를 출력한다.</p>
+        </div>
+
+        <div class="code-section">
+            <div class="tabs">
+                <button class="tab-button active" onclick="openTab(event, 'p11438-py')">Python</button>
+                <button class="tab-button" onclick="openTab(event, 'p11438-java')">Java</button>
+                <button class="tab-button" onclick="openTab(event, 'p11438-js')">JavaScript</button>
+            </div>
+            <div id="p11438-py" class="tab-content active">
+<pre>import sys
+from collections import deque
+
+input = sys.stdin.readline
+LOG = 18 # 2^17 > 100,000 이므로 18 정도면 충분
+
+N = int(input())
+graph = [[] for _ in range(N + 1)]
+
+for _ in range(N - 1):
+    a, b = map(int, input().split())
+    graph[a].append(b)
+    graph[b].append(a)
+
+parent = [[0] * LOG for _ in range(N + 1)]
+depth = [0] * (N + 1)
+visited = [False] * (N + 1)
+
+# BFS로 트리의 깊이와 바로 위 부모(2^0번째 조상) 설정
+def bfs_init(root):
+    queue = deque([root])
+    visited[root] = True
+    while queue:
+        node = queue.popleft()
+        for child in graph[node]:
+            if not visited[child]:
+                visited[child] = True
+                depth[child] = depth[node] + 1
+                parent[child][0] = node 
+                queue.append(child)
+
+bfs_init(1)
+
+# 희소 배열(DP) 채우기: 2^i번째 조상 = (2^(i-1)번째 조상)의 2^(i-1)번째 조상
+for i in range(1, LOG):
+    for j in range(1, N + 1):
+        parent[j][i] = parent[parent[j][i - 1]][i - 1]
+
+def lca(a, b):
+    # b가 더 깊은 노드가 되도록 스왑
+    if depth[a] > depth[b]:
+        a, b = b, a
+    
+    # 깊이 맞추기: 깊이 차이를 2의 제곱수만큼 점프하며 빠르게 좁힘
+    for i in range(LOG - 1, -1, -1):
+        if depth[b] - depth[a] >= (1 << i):
+            b = parent[b][i]
+            
+    if a == b:
+        return a
+    
+    # LCA 바로 밑까지 공통 조상을 찾아 올라감
+    for i in range(LOG - 1, -1, -1):
+        if parent[a][i] != parent[b][i]:
+            a = parent[a][i]
+            b = parent[b][i]
+            
+    return parent[a][0]
+
+M = int(input())
+for _ in range(M):
+    a, b = map(int, input().split())
+    print(lca(a, b))</pre>
+            </div>
+            <div id="p11438-java" class="tab-content">
+<pre>import java.io.*;
+import java.util.*;
+
+public class Main {
+    static ArrayList<Integer>[] graph;
+    static int[][] parent;
+    static int[] depth;
+    static boolean[] visited;
+    static int LOG = 18;
+
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer st;
+
+        int N = Integer.parseInt(br.readLine());
+        graph = new ArrayList[N + 1];
+        for (int i = 1; i <= N; i++) graph[i] = new ArrayList<>();
+
+        for (int i = 0; i < N - 1; i++) {
+            st = new StringTokenizer(br.readLine());
+            int a = Integer.parseInt(st.nextToken());
+            int b = Integer.parseInt(st.nextToken());
+            graph[a].add(b);
+            graph[b].add(a);
+        }
+
+        parent = new int[N + 1][LOG];
+        depth = new int[N + 1];
+        visited = new boolean[N + 1];
+
+        bfsInit(1);
+
+        for (int i = 1; i < LOG; i++) {
+            for (int j = 1; j <= N; j++) {
+                parent[j][i] = parent[parent[j][i - 1]][i - 1];
+            }
+        }
+
+        int M = Integer.parseInt(br.readLine());
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < M; i++) {
+            st = new StringTokenizer(br.readLine());
+            int a = Integer.parseInt(st.nextToken());
+            int b = Integer.parseInt(st.nextToken());
+            sb.append(lca(a, b)).append("\n");
+        }
+        System.out.print(sb);
+    }
+
+    static void bfsInit(int root) {
+        Queue<Integer> queue = new LinkedList<>();
+        queue.add(root);
+        visited[root] = true;
+        
+        while (!queue.isEmpty()) {
+            int node = queue.poll();
+            for (int child : graph[node]) {
+                if (!visited[child]) {
+                    visited[child] = true;
+                    depth[child] = depth[node] + 1;
+                    parent[child][0] = node;
+                    queue.add(child);
+                }
+            }
+        }
+    }
+
+    static int lca(int a, int b) {
+        if (depth[a] > depth[b]) {
+            int temp = a; a = b; b = temp;
+        }
+
+        for (int i = LOG - 1; i >= 0; i--) {
+            if (depth[b] - depth[a] >= (1 << i)) {
+                b = parent[b][i];
+            }
+        }
+
+        if (a == b) return a;
+
+        for (int i = LOG - 1; i >= 0; i--) {
+            if (parent[a][i] != parent[b][i]) {
+                a = parent[a][i];
+                b = parent[b][i];
+            }
+        }
+        return parent[a][0];
+    }
+}</pre>
+            </div>
+            <div id="p11438-js" class="tab-content">
+<pre>const fs = require('fs');
+const input = fs.readFileSync('/dev/stdin').toString().trim().split('\n');
+
+const N = Number(input[0]);
+const graph = Array.from({ length: N + 1 }, () => []);
+const LOG = 18;
+
+let lineIdx = 1;
+for (let i = 0; i < N - 1; i++) {
+    const [a, b] = input[lineIdx++].split(' ').map(Number);
+    graph[a].push(b);
+    graph[b].push(a);
+}
+
+const parent = Array.from({ length: N + 1 }, () => new Array(LOG).fill(0));
+const depth = new Array(N + 1).fill(0);
+const visited = new Array(N + 1).fill(false);
+
+const queue = [1];
+visited[1] = true;
+let head = 0;
+
+while(head < queue.length) {
+    const node = queue[head++];
+    for(const child of graph[node]) {
+        if(!visited[child]) {
+            visited[child] = true;
+            depth[child] = depth[node] + 1;
+            parent[child][0] = node;
+            queue.push(child);
+        }
+    }
+}
+
+for (let i = 1; i < LOG; i++) {
+    for (let j = 1; j <= N; j++) {
+        parent[j][i] = parent[parent[j][i - 1]][i - 1];
+    }
+}
+
+function lca(a, b) {
+    if (depth[a] > depth[b]) [a, b] = [b, a];
+
+    for (let i = LOG - 1; i >= 0; i--) {
+        if (depth[b] - depth[a] >= (1 << i)) {
+            b = parent[b][i];
+        }
+    }
+
+    if (a === b) return a;
+
+    for (let i = LOG - 1; i >= 0; i--) {
+        if (parent[a][i] !== parent[b][i]) {
+            a = parent[a][i];
+            b = parent[b][i];
+        }
+    }
+    return parent[a][0];
+}
+
+const M = Number(input[lineIdx++]);
+const result = [];
+for (let i = 0; i < M; i++) {
+    const [a, b] = input[lineIdx++].split(' ').map(Number);
+    result.push(lca(a, b));
+}
+console.log(result.join('\n'));</pre>
+            </div>
+        </div>
+    </div>
+
+    <div class="problem-container">
+        <div class="problem-title">11050번: 이항 계수 1</div>
+        <div class="description">
+            <img src="11050.png" alt="11050번 문제 이미지" class="problem-image">
+            <img src="1150-1.png" alt="파스칼의 삼각형 이미지" class="problem-image">
+
+        <div class="code-section">
+            <div class="tabs">
+                <button class="tab-button active" onclick="openTab(event, 'p11050-py')">Python</button>
+                <button class="tab-button" onclick="openTab(event, 'p11050-java')">Java</button>
+                <button class="tab-button" onclick="openTab(event, 'p11050-js')">JavaScript</button>
+            </div>
+            <div id="p11050-py" class="tab-content active">
+<pre>import sys
+input = sys.stdin.readline
+
+N, K = map(int, input().split())
+
+# 2차원 배열(DP 테이블) 초기화: (N+1) x (N+1) 크기
+D = [[0 for _ in range(N + 1)] for _ in range(N + 1)]
+
+# 초기값 설정
+for i in range(N + 1):
+    D[i][1] = i
+    D[i][0] = 1
+    D[i][i] = 1
+
+# DP 점화식 적용 (파스칼의 삼각형)
+for i in range(2, N + 1):
+    for j in range(1, i): # 자바 코드의 j < i 조건과 동일
+        # 조합 기본 점화식: nCr = n-1Cr + n-1Cr-1
+        D[i][j] = D[i - 1][j] + D[i - 1][j - 1]
+
+print(D[N][K])</pre>
+            </div>
+            <div id="p11050-java" class="tab-content">
+<pre>import java.util.Scanner;
+
+public class Main {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        int N = sc.nextInt();
+        int K = sc.nextInt();
+        
+        // 재귀나 팩토리얼 함수 없이 DP로 구현 가능
+        int[][] D = new int[N + 1][N + 1];
+
+        for (int i = 0; i <= N; i++) {
+            D[i][0] = 1;
+            D[i][i] = 1;
+            if(i > 0) D[i][1] = i;
+        }
+
+        for (int i = 2; i <= N; i++) {
+            for (int j = 1; j < i; j++) {
+                D[i][j] = D[i - 1][j - 1] + D[i - 1][j];
+            }
+        }
+        
+        System.out.println(D[N][K]);
+    }
+}</pre>
+            </div>
+            <div id="p11050-js" class="tab-content">
+<pre>const fs = require('fs');
+const [N, K] = fs.readFileSync('/dev/stdin').toString().trim().split(' ').map(Number);
+
+const D = Array.from({ length: N + 1 }, () => new Array(N + 1).fill(0));
+
+for (let i = 0; i <= N; i++) {
+    D[i][0] = 1;
+    D[i][i] = 1;
+    if (i > 0) D[i][1] = i;
+}
+
+for (let i = 2; i <= N; i++) {
+    for (let j = 1; j < i; j++) {
+        D[i][j] = D[i - 1][j - 1] + D[i - 1][j];
+    }
+}
+
+console.log(D[N][K]);</pre>
+            </div>
+        </div>
+    </div>
+
+    <div class="problem-container">
+        <div class="problem-title">11051번: 이항 계수 2</div>
+        <div class="description">
+            <div class="section-title">문제 설명</div>
+            <p>자연수 N과 정수 K가 주어졌을 때 이항 계수 (N K)를 10,007로 나눈 나머지를 구하는 프로그램을 작성하시오.</p>
+        </div>
+        <div class="io-section">
+            <div class="section-title">입력</div>
+            <p>첫째 줄에 N과 K가 주어진다. (1 ≤ N ≤ 1,000, 0 ≤ K ≤ N)</p>
+            <div class="section-title">출력</div>
+            <p>이항 계수 (N K)를 10,007로 나눈 나머지를 출력한다.</p>
+        </div>
+
+        <div class="code-section">
+            <div class="tabs">
+                <button class="tab-button active" onclick="openTab(event, 'p11051-py')">Python</button>
+                <button class="tab-button" onclick="openTab(event, 'p11051-java')">Java</button>
+                <button class="tab-button" onclick="openTab(event, 'p11051-js')">JavaScript</button>
+            </div>
+            <div id="p11051-py" class="tab-content active">
+<pre>import sys
+sys.setrecursionlimit(10**6) # 재귀 깊이 제한 해제 (기본값은 1000이라 부족할 수 있음)
+input = sys.stdin.readline
+
+N, K = map(int, input().split())
+dp = [[-1] * (N + 1) for _ in range(N + 1)] # 계산되지 않은 값은 -1로 초기화
+
+def bino(n, k):
+    # 기저 사례: k=0(아무것도 안 뽑음)이거나 n=k(모두 뽑음)인 경우 경우의 수는 1
+    if k == 0 or n == k:
+        return 1
+    
+    # 이미 계산한 적이 있다면(메모이제이션), 저장된 값을 바로 반환
+    if dp[n][k] != -1:
+        return dp[n][k]
+    
+    # 파스칼의 법칙: nCk = (n-1)C(k-1) + (n-1)Ck
+    dp[n][k] = (bino(n - 1, k - 1) + bino(n - 1, k)) % 10007
+    
+    return dp[n][k]
+
+print(bino(N, K))</pre>
+            </div>
+            <div id="p11051-java" class="tab-content">
+<pre>import java.util.Scanner;
+
+public class Main {
+    static int[][] dp;
+    
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        int N = sc.nextInt();
+        int K = sc.nextInt();
+        
+        dp = new int[N + 1][N + 1];
+        
+        for(int i=0; i<=N; i++){
+            dp[i][0] = 1;
+            dp[i][i] = 1;
+        }
+        
+        for(int i=2; i<=N; i++){
+            for(int j=1; j<i; j++){
+                dp[i][j] = (dp[i-1][j-1] + dp[i-1][j]) % 10007;
+            }
+        }
+        System.out.println(dp[N][K]);
+    }
+}</pre>
+            </div>
+            <div id="p11051-js" class="tab-content">
+<pre>const fs = require('fs');
+const [N, K] = fs.readFileSync('/dev/stdin').toString().trim().split(' ').map(Number);
+
+const dp = Array.from({ length: N + 1 }, () => new Array(N + 1).fill(0));
+
+for (let i = 0; i <= N; i++) {
+    dp[i][0] = 1;
+    dp[i][i] = 1;
+}
+
+for (let i = 2; i <= N; i++) {
+    for (let j = 1; j < i; j++) {
+        dp[i][j] = (dp[i - 1][j - 1] + dp[i - 1][j]) % 10007;
+    }
+}
+
+console.log(dp[N][K]);</pre>
+            </div>
+        </div>
+    </div>
+
+    <div class="problem-container">
+        <div class="problem-title">1010번: 다리 놓기</div>
+        <div class="description">
+            <div class="section-title">문제 설명</div>
+            <p>서쪽의 사이트 N개와 동쪽의 사이트 M개를 연결하려고 한다. (N ≤ M) 다리가 서로 겹치지 않게 연결하는 경우의 수를 구하시오.</p>
+        </div>
+        <div class="io-section">
+            <div class="section-title">입력</div>
+            <p>입력의 첫 줄에는 테스트 케이스의 개수 T가 주어진다. 그 다음 줄부터 각각의 테스트케이스에 대해 정수 N, M (0 < N ≤ M < 30)이 주어진다.</p>
+            <div class="section-title">출력</div>
+            <p>각 테스트 케이스에 대해 주어진 조건하에 다리를 지을 수 있는 경우의 수를 출력한다.</p>
+        </div>
+
+        <div class="code-section">
+            <div class="tabs">
+                <button class="tab-button active" onclick="openTab(event, 'p1010-py')">Python</button>
+                <button class="tab-button" onclick="openTab(event, 'p1010-java')">Java</button>
+                <button class="tab-button" onclick="openTab(event, 'p1010-js')">JavaScript</button>
+            </div>
+            <div id="p1010-py" class="tab-content active">
+<pre>import sys
+import math
+
+input = sys.stdin.readline
+
+T = int(input())
+
+for _ in range(T):
+    N, M = map(int, input().split())
+    
+    # M개의 사이트 중 N개를 선택하는 조합(nCr) 계산
+    # 순서가 정해져 있으므로(겹치지 않음) 뽑기만 하면 됨
+    print(math.comb(M, N))</pre>
+            </div>
+            <div id="p1010-java" class="tab-content">
+<pre>import java.io.*;
+import java.util.*;
+
+public class Main {
+    static int[][] dp = new int[30][30];
+
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        int T = Integer.parseInt(br.readLine());
+
+        // DP 테이블 미리 생성
+        for (int i = 0; i < 30; i++) {
+            dp[i][0] = 1;
+            dp[i][i] = 1;
+        }
+        for (int i = 2; i < 30; i++) {
+            for (int j = 1; j < i; j++) {
+                dp[i][j] = dp[i - 1][j - 1] + dp[i - 1][j];
+            }
+        }
+
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < T; i++) {
+            StringTokenizer st = new StringTokenizer(br.readLine());
+            int N = Integer.parseInt(st.nextToken());
+            int M = Integer.parseInt(st.nextToken());
+            sb.append(dp[M][N]).append("\n");
+        }
+        System.out.print(sb);
+    }
+}</pre>
+            </div>
+            <div id="p1010-js" class="tab-content">
+<pre>const fs = require('fs');
+const input = fs.readFileSync('/dev/stdin').toString().trim().split('\n');
+
+const T = Number(input[0]);
+const dp = Array.from({ length: 31 }, () => new Array(31).fill(0));
+
+for (let i = 0; i <= 30; i++) {
+    dp[i][0] = 1;
+    dp[i][i] = 1;
+}
+for (let i = 2; i <= 30; i++) {
+    for (let j = 1; j < i; j++) {
+        dp[i][j] = dp[i - 1][j - 1] + dp[i - 1][j];
+    }
+}
+
+for (let i = 1; i <= T; i++) {
+    const [N, M] = input[i].split(' ').map(Number);
+    console.log(dp[M][N]);
+}</pre>
+            </div>
+        </div>
+    </div>
+
+    <div class="problem-container">
+        <div class="problem-title">1722번: 순열의 순서</div>
+        <div class="description">
+            <div class="section-title">문제 설명</div>
+            <p>1부터 N까지의 수를 임의로 배열한 순열은 총 N!가지가 있다. 1번 소문제: K가 주어지면 K번째 순열을 구하라. 2번 소문제: 순열이 주어지면 몇 번째 순열인지 구하라.</p>
+        </div>
+        <div class="io-section">
+            <div class="section-title">입력</div>
+            <p>첫째 줄에 N(1 ≤ N ≤ 20)이 주어진다. 둘째 줄의 첫 번째 수가 1인 경우 K(1 ≤ K ≤ N!)가, 2인 경우 순열이 주어진다.</p>
+            <div class="section-title">출력</div>
+            <p>1인 경우 K번째 순열을, 2인 경우 입력된 순열의 순서를 출력한다.</p>
+        </div>
+
+        <div class="code-section">
+            <div class="tabs">
+                <button class="tab-button active" onclick="openTab(event, 'p1722-py')">Python</button>
+                <button class="tab-button" onclick="openTab(event, 'p1722-java')">Java</button>
+                <button class="tab-button" onclick="openTab(event, 'p1722-js')">JavaScript</button>
+            </div>
+            <div id="p1722-py" class="tab-content active">
+<pre>import sys
+import math
+
+input = sys.stdin.readline
+
+N = int(input())
+data = list(map(int, input().split()))
+problem_type = data[0]
+
+# 1부터 N까지 사용할 수 있는 숫자 리스트 초기화
+nums = list(range(1, N + 1))
+
+if problem_type == 1:
+    K = data[1]
+    result = []
+    
+    for i in range(N):
+        # 남은 자리(N-1-i)로 만들 수 있는 경우의 수(팩토리얼) 계산
+        fact = math.factorial(N - 1 - i)
+        
+        # K번째 순열이 되기 위해 현재 숫자 리스트(nums)에서 선택해야 할 인덱스 계산
+        step = (K - 1) // fact
+        
+        result.append(nums[step])
+        nums.pop(step) # 사용한 숫자는 리스트에서 제거
+        
+        # 다음 자릿수를 위해 K값 갱신 (선택한 묶음만큼 뺌)
+        K -= fact * step
+        
+    print(*result)
+
+else:
+    target_perm = data[1:]
+    result = 1 # 순서는 1번부터 시작하므로 1로 초기화
+    
+    for num in target_perm:
+        fact = math.factorial(N - 1)
+        
+        # 현재 숫자(num)보다 앞에 올 수 있는(아직 안 쓴) 숫자의 개수만큼 fact를 곱해 더함
+        result += nums.index(num) * fact
+        
+        nums.pop(nums.index(num)) # 사용한 숫자는 제거
+        N -= 1 # 남은 자릿수 감소
+        
+    print(result)</pre>
+            </div>
+            <div id="p1722-java" class="tab-content">
+<pre>import java.io.*;
+import java.util.*;
+
+public class Main {
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        int N = Integer.parseInt(br.readLine());
+        StringTokenizer st = new StringTokenizer(br.readLine());
+        int type = Integer.parseInt(st.nextToken());
+
+        long[] fact = new long[21];
+        fact[0] = 1;
+        for (int i = 1; i <= 20; i++) fact[i] = fact[i - 1] * i;
+
+        List<Integer> nums = new ArrayList<>();
+        for (int i = 1; i <= N; i++) nums.add(i);
+
+        if (type == 1) {
+            long K = Long.parseLong(st.nextToken());
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < N; i++) {
+                for (int j = 0; j < nums.size(); j++) {
+                    if (K <= fact[N - 1 - i]) {
+                        sb.append(nums.get(j)).append(" ");
+                        nums.remove(j);
+                        break;
+                    }
+                    K -= fact[N - 1 - i];
+                }
+            }
+            System.out.println(sb);
+        } else {
+            long result = 1;
+            for (int i = 0; i < N; i++) {
+                int num = Integer.parseInt(st.nextToken());
+                for (int j = 0; j < nums.size(); j++) {
+                    if (nums.get(j) == num) {
+                        nums.remove(j);
+                        result += fact[N - 1 - i] * j;
+                        break;
+                    }
+                }
+            }
+            System.out.println(result);
+        }
+    }
+}</pre>
+            </div>
+            <div id="p1722-js" class="tab-content">
+<pre>const fs = require('fs');
+const input = fs.readFileSync('/dev/stdin').toString().trim().split('\n');
+
+const N = Number(input[0]);
+const line2 = input[1].split(' ').map(Number);
+const type = line2[0];
+
+const fact = [1n];
+for (let i = 1; i <= 20; i++) fact[i] = fact[i - 1] * BigInt(i);
+
+const nums = [];
+for (let i = 1; i <= N; i++) nums.push(i);
+
+if (type === 1) {
+    let K = BigInt(line2[1]);
+    let result = [];
+    
+    for (let i = 0; i < N; i++) {
+        let f = fact[N - 1 - i];
+        let step = Number((K - 1n) / f);
+        
+        result.push(nums[step]);
+        nums.splice(step, 1);
+        
+        K -= f * BigInt(step);
+    }
+    console.log(result.join(' '));
+} else {
+    let target = line2.slice(1);
+    let result = 1n;
+    
+    for (let i = 0; i < N; i++) {
+        let num = target[i];
+        let idx = nums.indexOf(num);
+        
+        result += BigInt(idx) * fact[N - 1 - i];
+        nums.splice(idx, 1);
+    }
+    console.log(result.toString());
+}</pre>
+            </div>
+        </div>
+    </div>
+
+    <div class="problem-container">
+        <div class="problem-title">1256번: 사전</div>
+        <div class="description">
+            <div class="section-title">문제 설명</div>
+            <p>사전에 'a'가 N개, 'z'가 M개로 이루어진 문자열이 모두 수록되어 있다. 사전 순으로 K번째 문자열을 출력하라.</p>
+        </div>
+        <div class="io-section">
+            <div class="section-title">입력</div>
+            <p>첫째 줄에 N, M, K가 주어진다. (1 ≤ N, M ≤ 100, 1 ≤ K ≤ 1,000,000,000)</p>
+            <div class="section-title">출력</div>
+            <p>규완이의 사전에서 K번째 문자열을 출력한다. 만약 K번째 문자열이 없으면 -1을 출력한다.</p>
+        </div>
+
+        <div class="code-section">
+            <div class="tabs">
+                <button class="tab-button active" onclick="openTab(event, 'p1256-py')">Python</button>
+                <button class="tab-button" onclick="openTab(event, 'p1256-java')">Java</button>
+                <button class="tab-button" onclick="openTab(event, 'p1256-js')">JavaScript</button>
+            </div>
+            <div id="p1256-py" class="tab-content active">
+<pre>import sys
+import math
+
+input = sys.stdin.readline
+
+N, M, K = map(int, input().split())
+
+# 전체 가능한 문자열의 개수보다 K가 크다면 만들 수 없음 (-1 출력)
+if math.comb(N + M, M) < K:
+    print(-1)
+else:
+    result = ""
+    while N > 0 and M > 0:
+        # 현재 자리에 'a'를 선택했을 때 남은 문자들로 만들 수 있는 경우의 수 계산
+        count = math.comb(N - 1 + M, M) 
+        
+        if K <= count:
+            result += "a"
+            N -= 1
+        else:
+            result += "z"
+            M -= 1
+            K -= count # 'a'로 시작하는 경우의 수를 모두 건너뜀(Skip)
+
+    # 남은 문자들(N이나 M 중 하나가 0이 된 경우)을 뒤에 다 붙여줌
+    result += "a" * N + "z" * M
+    print(result)</pre>
+            </div>
+            <div id="p1256-java" class="tab-content">
+<pre>import java.io.*;
+import java.util.*;
+
+public class Main {
+    static double[][] dp = new double[201][201]; // 조합 값 저장 (범위 초과 방지 double)
+
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer st = new StringTokenizer(br.readLine());
+        
+        int N = Integer.parseInt(st.nextToken());
+        int M = Integer.parseInt(st.nextToken());
+        double K = Double.parseDouble(st.nextToken());
+
+        // 조합 테이블 생성
+        for (int i = 0; i <= 200; i++) {
+            dp[i][0] = 1;
+            dp[i][i] = 1;
+        }
+        for (int i = 2; i <= 200; i++) {
+            for (int j = 1; j < i; j++) {
+                dp[i][j] = dp[i - 1][j - 1] + dp[i - 1][j];
+                if (dp[i][j] > 1_000_000_000) dp[i][j] = 1_000_000_001; // K 최대값 초과 처리
+            }
+        }
+
+        if (dp[N + M][M] < K) {
+            System.out.println("-1");
+            return;
+        }
+
+        StringBuilder sb = new StringBuilder();
+        while (N > 0 && M > 0) {
+            double count = dp[N - 1 + M][M]; // 'a'를 골랐을 때 남은 경우의 수
+            
+            if (K <= count) {
+                sb.append('a');
+                N--;
+            } else {
+                sb.append('z');
+                K -= count;
+                M--;
+            }
+        }
+        // 남은 문자 이어 붙이기
+        while (N-- > 0) sb.append('a');
+        while (M-- > 0) sb.append('z');
+        
+        System.out.println(sb);
+    }
+}</pre>
+            </div>
+            <div id="p1256-js" class="tab-content">
+<pre>const fs = require('fs');
+const [N, M, K] = fs.readFileSync('/dev/stdin').toString().trim().split(' ').map(Number);
+
+const dp = Array.from({ length: 201 }, () => new Array(201).fill(0));
+
+for (let i = 0; i <= 200; i++) {
+    dp[i][0] = 1;
+    dp[i][i] = 1;
+}
+for (let i = 2; i <= 200; i++) {
+    for (let j = 1; j < i; j++) {
+        dp[i][j] = dp[i - 1][j - 1] + dp[i - 1][j];
+        if (dp[i][j] > 1000000000) dp[i][j] = 1000000001;
+    }
+}
+
+if (dp[N + M][M] < K) {
+    console.log("-1");
+} else {
+    let n = N;
+    let m = M;
+    let k = K;
+    let result = "";
+
+    while (n > 0 && m > 0) {
+        let count = dp[n - 1 + m][m];
+        
+        if (k <= count) {
+            result += "a";
+            n--;
+        } else {
+            result += "z";
+            k -= count;
+            m--;
+        }
+    }
+    result += "a".repeat(n) + "z".repeat(m);
+    console.log(result);
+}</pre>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function openTab(evt, tabName) {
+            var i, tabcontent, tablinks;
+            
+            var parentSection = evt.currentTarget.closest('.code-section');
+            
+            tabcontent = parentSection.getElementsByClassName("tab-content");
+            for (i = 0; i < tabcontent.length; i++) {
+                tabcontent[i].style.display = "none";
+                tabcontent[i].classList.remove("active");
+            }
+            
+            tablinks = parentSection.getElementsByClassName("tab-button");
+            for (i = 0; i < tablinks.length; i++) {
+                tablinks[i].classList.remove("active");
+            }
+            
+            parentSection.querySelector("#" + tabName).style.display = "block";
+            evt.currentTarget.classList.add("active");
+        }
+    </script>
+
+</body>
+</html>
